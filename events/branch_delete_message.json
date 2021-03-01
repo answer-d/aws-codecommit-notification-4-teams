@@ -1,0 +1,22 @@
+{
+  "account": "XXXXXXXXXXXX",
+  "additionalAttributes": {},
+  "detail": {
+    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/yamaguti-dxa",
+    "event": "referenceDeleted",
+    "oldCommitId": "e4bc1e00cb0dc3cc6bb33c0882a35638737d005e",
+    "referenceFullName": "refs/heads/feature-implement-almost",
+    "referenceName": "feature-implement-almost",
+    "referenceType": "branch",
+    "repositoryId": "bdd47ea8-e251-40aa-95bd-12738bb66bf3",
+    "repositoryName": "sample-repo-ansible"
+  },
+  "detailType": "CodeCommit Repository State Change",
+  "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/c60a8bfc2e9e495111f1291db970ddf501ef1878",
+  "region": "ap-northeast-1",
+  "resources": [
+    "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:sample-repo-ansible"
+  ],
+  "source": "aws.codecommit",
+  "time": "2020-09-03T06:35:57Z"
+}

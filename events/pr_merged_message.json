@@ -1,0 +1,33 @@
+{
+  "account": "XXXXXXXXXXXX",
+  "additionalAttributes": {},
+  "detail": {
+    "author": "arn:aws:iam::XXXXXXXXXXXX:user/ke-sato_nes",
+    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/ke-sato_nes",
+    "creationDate": "Thu Sep 03 09:32:38 UTC 2020",
+    "destinationCommit": "01fb3163f4bcc8faa4f05c41852db52c21146a96",
+    "destinationReference": "refs/heads/master",
+    "event": "pullRequestMergeStatusUpdated",
+    "isMerged": "True",
+    "lastModifiedDate": "Fri Sep 04 03:02:57 UTC 2020",
+    "mergeOption": "THREE_WAY_MERGE",
+    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: sample-repo-terraform. User: arn:aws:iam::XXXXXXXXXXXX:user/ke-sato_nes. Event: Updated. Pull request name: 80. Additional information: The pull request merge status has been updated. The status is merged. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/sample-repo-terraform/pull-requests/80?region=ap-northeast-1.",
+    "pullRequestId": "80",
+    "pullRequestStatus": "Closed",
+    "repositoryNames": [
+      "sample-repo-terraform"
+    ],
+    "revisionId": "b895112c291952b08964bed6e2e61ea961f321b0eb8083d7e88927111304496b",
+    "sourceCommit": "49884a07eb08132c322e6ad378baa6196ed9a4c2",
+    "sourceReference": "refs/heads/feature-refront-environment",
+    "title": "\u30c6\u30b9\u30c8\uff5e\uff5e\uff5e"
+  },
+  "detailType": "CodeCommit Pull Request State Change",
+  "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/f577c0c6565391b7c84dd2caf91c9803b0d2c041",
+  "region": "ap-northeast-1",
+  "resources": [
+    "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:sample-repo-terraform"
+  ],
+  "source": "aws.codecommit",
+  "time": "2020-09-04T03:03:06Z"
+}

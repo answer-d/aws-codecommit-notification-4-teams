@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventSubscriptionArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:acos-rehost-infra-general:f12a8bbd-5c43-48d7-938f-5f8c040cef64",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Message": "{\"account\":\"XXXXXXXXXXXX\",\"detailType\":\"CodeCommit Pull Request State Change\",\"region\":\"ap-northeast-1\",\"source\":\"aws.codecommit\",\"time\":\"2020-09-04T03:03:06Z\",\"notificationRuleArn\":\"arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/f577c0c6565391b7c84dd2caf91c9803b0d2c041\",\"detail\":{\"sourceReference\":\"refs/heads/feature-refront-environment\",\"lastModifiedDate\":\"Fri Sep 04 03:02:57 UTC 2020\",\"author\":\"arn:aws:iam::XXXXXXXXXXXX:user/ke-sato_nes\",\"isMerged\":\"True\",\"pullRequestStatus\":\"Closed\",\"notificationBody\":\"A pull request event occurred in the following AWS CodeCommit repository: sample-repo-terraform. User: arn:aws:iam::XXXXXXXXXXXX:user/ke-sato_nes. Event: Updated. Pull request name: 80. Additional information: The pull request merge status has been updated. The status is merged. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/sample-repo-terraform/pull-requests/80?region=ap-northeast-1.\",\"destinationReference\":\"refs/heads/master\",\"callerUserArn\":\"arn:aws:iam::XXXXXXXXXXXX:user/ke-sato_nes\",\"creationDate\":\"Thu Sep 03 09:32:38 UTC 2020\",\"pullRequestId\":\"80\",\"title\":\"\u30c6\u30b9\u30c8\uff5e\uff5e\uff5e\",\"revisionId\":\"b895112c291952b08964bed6e2e61ea961f321b0eb8083d7e88927111304496b\",\"repositoryNames\":[\"sample-repo-terraform\"],\"destinationCommit\":\"01fb3163f4bcc8faa4f05c41852db52c21146a96\",\"event\":\"pullRequestMergeStatusUpdated\",\"mergeOption\":\"THREE_WAY_MERGE\",\"sourceCommit\":\"49884a07eb08132c322e6ad378baa6196ed9a4c2\"},\"resources\":[\"arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:sample-repo-terraform\"],\"additionalAttributes\":{}}",
+        "MessageAttributes": {},
+        "MessageId": "15802668-9963-5d64-950b-71a329cf47a6",
+        "Signature": "P+VkQHO13nCUQVVb0/ygxb0CGquFa9XA9Ic5HbLIfnbNa6DBL5XgU2yUwJWmOyBC1vXq1ChBCZkvcZ+UqFOqEOg1y9iat9jN60gluen5xvK7n1b251DRp7/lqKjZEL5KKCuFtPXIglMJwfeHUsKR19lWXAmCo7+mVvFCc5gBZ2rH46T0v6C+6ZLQ3k42A8DQm4zUK+pmRCD9bDj378gMpulhKp97/Y4aYgWT6g/2OfO6HcfOnowI0iR2o9W2VmLxNYT0lkKfDrH2holt0rwKnxgupe2pc741rvg4OUefbdK7Qj9rnLvYzxROCkgWvGSoRbCd7U3lWtRYorsbEyy+gw==",
+        "SignatureVersion": "1",
+        "SigningCertUrl": "https://sns.ap-northeast-1.amazonaws.com/SimpleNotificationService-a86cb10b4e1f29c941702d737128f7b6.pem",
+        "Subject": "None",
+        "Timestamp": "2020-09-04T03:03:08.022Z",
+        "TopicArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:acos-rehost-infra-general",
+        "Type": "Notification",
+        "UnsubscribeUrl": "https://sns.ap-northeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:acos-rehost-infra-general:f12a8bbd-5c43-48d7-938f-5f8c040cef64"
+      }
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  aws-codecommit-notification-4-teams
+
+  CodeCommitイベントをTeamsに通知するLambdaとSNSを作成
+
+Parameters:
+  HookUrl:
+    Type: String
+    Default: https://xxx
+    Description: Incoming webhook url of teams connector
+
+Resources:
+  SnsTopic:
+    Type: AWS::SNS::Topic
+    Properties: {}
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: aws-codecommit-notification-for-teams/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Events:
+        Sns:
+          Type: SNS
+          Properties:
+            Topic: !Ref SnsTopic
+      Timeout: 10
+      MemorySize: 128
+      Environment:
+        Variables:
+          HOOK_URL: !Ref HookUrl
+
+  # 削除後にLogGroupが残り続ける問題に対応
+  # (参考) https://dev.classmethod.jp/articles/should-create-cloudwatch-logs-log-group-when-creating-lambda-with-aws-sam/
+  FunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${Function}
+      RetentionInDays: 7
+
+Outputs:
+  Function:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt Function.Arn
+  FunctionIamRole:
+    Description: "Implicit IAM Role created for Function"
+    Value: !GetAtt FunctionRole.Arn
+  SnsTopic:
+    Description: "SNS Topic ARN"
+    Value: !Ref SnsTopic

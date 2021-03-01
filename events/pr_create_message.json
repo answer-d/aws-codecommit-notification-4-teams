@@ -1,0 +1,43 @@
+{
+  "account": "XXXXXXXXXXXX",
+  "additionalAttributes": {
+    "changedFiles": [
+      {
+        "changeType": "M",
+        "filePath": "setup_acos_refront_server.yml"
+      }
+    ],
+    "numberOfFilesAdded": "0",
+    "numberOfFilesDeleted": "0",
+    "numberOfFilesModified": "1"
+  },
+  "detail": {
+    "author": "arn:aws:iam::XXXXXXXXXXXX:user/yamaguti-dxa",
+    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/yamaguti-dxa",
+    "creationDate": "Thu Sep 03 05:49:31 UTC 2020",
+    "description": "hogehoge",
+    "destinationCommit": "d02ee1f6b6b4a797a0bf796a3ff95eec77e283ba",
+    "destinationReference": "refs/heads/master",
+    "event": "pullRequestCreated",
+    "isMerged": "False",
+    "lastModifiedDate": "Thu Sep 03 05:49:31 UTC 2020",
+    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: sample-repo-ansible. User: arn:aws:iam::XXXXXXXXXXXX:user/yamaguti-dxa. Event: Created. Pull request name: 78. Additional information: A pull request was created with the following ID: 78. The title of the pull request is: \u3060\u3044\u305f\u3044\u5b9f\u88c5. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/sample-repo-ansible/pull-requests/78?region=ap-northeast-1.",
+    "pullRequestId": "78",
+    "pullRequestStatus": "Open",
+    "repositoryNames": [
+      "sample-repo-ansible"
+    ],
+    "revisionId": "8d592fa086ad8ab289e5685c504325f6d3d2eb8966d5c1a17ba05f7054348d05",
+    "sourceCommit": "e4bc1e00cb0dc3cc6bb33c0882a35638737d005e",
+    "sourceReference": "refs/heads/feature-implement-almost",
+    "title": "\u3060\u3044\u305f\u3044\u5b9f\u88c5"
+  },
+  "detailType": "CodeCommit Pull Request State Change",
+  "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/c60a8bfc2e9e495111f1291db970ddf501ef1878",
+  "region": "ap-northeast-1",
+  "resources": [
+    "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:sample-repo-ansible"
+  ],
+  "source": "aws.codecommit",
+  "time": "2020-09-03T05:49:43Z"
+}

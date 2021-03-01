@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventSubscriptionArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:acos-rehost-infra-general:f12a8bbd-5c43-48d7-938f-5f8c040cef64",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Message": "{\"account\":\"XXXXXXXXXXXX\",\"detailType\":\"CodeCommit Repository State Change\",\"region\":\"ap-northeast-1\",\"source\":\"aws.codecommit\",\"time\":\"2020-09-03T06:35:57Z\",\"notificationRuleArn\":\"arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/c60a8bfc2e9e495111f1291db970ddf501ef1878\",\"detail\":{\"referenceFullName\":\"refs/heads/feature-implement-almost\",\"repositoryId\":\"bdd47ea8-e251-40aa-95bd-12738bb66bf3\",\"referenceType\":\"branch\",\"callerUserArn\":\"arn:aws:iam::XXXXXXXXXXXX:user/yamaguti-dxa\",\"event\":\"referenceDeleted\",\"repositoryName\":\"sample-repo-ansible\",\"oldCommitId\":\"e4bc1e00cb0dc3cc6bb33c0882a35638737d005e\",\"referenceName\":\"feature-implement-almost\"},\"resources\":[\"arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:sample-repo-ansible\"],\"additionalAttributes\":{}}",
+        "MessageAttributes": {},
+        "MessageId": "19aaf3bf-d22d-5e4f-a593-a47543222825",
+        "Signature": "oYNRhFU58YJkAAvJYoZ5wUq9Fb9Q3NgRD3hDB15Fj30iDE5MfjCOf2K1KQMslY3tgWhdnLODvT8TJx3KNZ8S42Gn2Max2UIqucjfjw8PnV5qpedGAxsLRgViYOLACexXkfHTl+hJCft10HSXlVpeGOhn5vUZuKcnomcoVaVthOBDPnLu5Ymwd8lPaVcgKKdZUPEuAGAUK+E/0IDeizw5fLiYNzEQyfz8pehLrER8kVZRCZNeqdTXzVogasK9tzkxPCz0LUq4Wv4/OrBczLbenKhT6y3+PKw3wUkEAZwbwQJ2qypQPXT2WzG9Vc3Rx8J/BkqTxGwj/QegAgg6fAl2HA==",
+        "SignatureVersion": "1",
+        "SigningCertUrl": "https://sns.ap-northeast-1.amazonaws.com/SimpleNotificationService-a86cb10b4e1f29c941702d737128f7b6.pem",
+        "Subject": "None",
+        "Timestamp": "2020-09-03T06:35:59.577Z",
+        "TopicArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:acos-rehost-infra-general",
+        "Type": "Notification",
+        "UnsubscribeUrl": "https://sns.ap-northeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:acos-rehost-infra-general:f12a8bbd-5c43-48d7-938f-5f8c040cef64"
+      }
+    }
+  ]
+}
