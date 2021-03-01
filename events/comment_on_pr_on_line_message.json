@@ -1,0 +1,34 @@
+{
+  "account": "XXXXXXXXXXXX",
+  "additionalAttributes": {
+    "commentedLine": "fugafuga",
+    "commentedLineNumber": "1",
+    "comments": [
+      {
+        "authorArn": "arn:aws:iam::XXXXXXXXXXXX:user/someone",
+        "commentText": "PR\u3089\u3044\u3093\u3053\u3081\u3093\u3068"
+      }
+    ],
+    "filePath": "test2.txt",
+    "resourceArn": "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test"
+  },
+  "detail": {
+    "afterCommitId": "ba44315cc607113e88c615cc81d0341b104d28c6",
+    "beforeCommitId": "4c6a8db812321fc41eca5ffd17a766622a71118f",
+    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/someone",
+    "commentId": "c81cbb49-7142-43d8-ab21-99f3d3096af2:a3895391-025a-45e4-a2cc-98079038ee13",
+    "event": "commentOnPullRequestCreated",
+    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: aws-codecommit-notification-4-teams-test. The user: arn:aws:iam::XXXXXXXXXXXX:user/someone made a comment or replied to a comment. The comment was made on the following Pull Request: 9. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/aws-codecommit-notification-4-teams-test/pull-requests/9/activity#c81cbb49-7142-43d8-ab21-99f3d3096af2%3Aa3895391-025a-45e4-a2cc-98079038ee13?region=ap-northeast-1",
+    "pullRequestId": "9",
+    "repositoryId": "73d44299-37ec-491e-9cfe-ed0051aaf19b",
+    "repositoryName": "aws-codecommit-notification-4-teams-test"
+  },
+  "detailType": "CodeCommit Comment on Pull Request",
+  "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/1367cd1289f44ede5c281338554d0cd7b1fd2e21",
+  "region": "ap-northeast-1",
+  "resources": [
+    "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test"
+  ],
+  "source": "aws.codecommit",
+  "time": "2021-03-01T07:23:04Z"
+}

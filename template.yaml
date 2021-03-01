@@ -4,7 +4,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   aws-codecommit-notification-4-teams
 
-  CodeCommitイベントをTeamsに通知するLambdaとSNSを作成
+  Create Lambda and SNS to notify CodeCommit events to Teams
 
 Parameters:
   HookUrl:
@@ -17,10 +17,45 @@ Resources:
     Type: AWS::SNS::Topic
     Properties: {}
 
+  TopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: __default_policy_ID
+            Effect: Allow
+            Principal:
+              AWS: "*"
+            Action:
+              - "SNS:GetTopicAttributes"
+              - "SNS:SetTopicAttributes"
+              - "SNS:AddPermission"
+              - "SNS:RemovePermission"
+              - "SNS:DeleteTopic"
+              - "SNS:Subscribe"
+              - "SNS:ListSubscriptionsByTopic"
+              - "SNS:Publish"
+              - "SNS:Receive"
+            Resource: !Ref SnsTopic
+            Condition:
+              StringEquals:
+                AWS:SourceOwner: !Ref "AWS::AccountId"
+          - Sid: AWSCodeStarNotifications_publish
+            Effect: Allow
+            Principal:
+              Service:
+                - codestar-notifications.amazonaws.com
+            Action:
+              - "SNS:Publish"
+            Resource: !Ref SnsTopic
+      Topics:
+        - !Ref SnsTopic
+
   Function:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: aws-codecommit-notification-for-teams/
+      CodeUri: aws_codecommit_notification_4_teams/
       Handler: app.lambda_handler
       Runtime: python3.8
       Events:

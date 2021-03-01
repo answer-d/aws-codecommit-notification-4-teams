@@ -1,0 +1,22 @@
+{
+  "account": "XXXXXXXXXXXX",
+  "additionalAttributes": {},
+  "detail": {
+    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/someone",
+    "event": "referenceDeleted",
+    "oldCommitId": "4c6a8db812321fc41eca5ffd17a766622a71118f",
+    "referenceFullName": "refs/tags/tag-test",
+    "referenceName": "tag-test",
+    "referenceType": "tag",
+    "repositoryId": "73d44299-37ec-491e-9cfe-ed0051aaf19b",
+    "repositoryName": "aws-codecommit-notification-4-teams-test"
+  },
+  "detailType": "CodeCommit Repository State Change",
+  "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/1367cd1289f44ede5c281338554d0cd7b1fd2e21",
+  "region": "ap-northeast-1",
+  "resources": [
+    "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test"
+  ],
+  "source": "aws.codecommit",
+  "time": "2021-03-01T07:33:13Z"
+}

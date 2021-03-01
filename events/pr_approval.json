@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventSubscriptionArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test-SnsTopic-94BL1BGB64LN:ec94d66d-0771-4ab5-bcff-25319f499dd9",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Message": "{\"account\":\"XXXXXXXXXXXX\",\"detailType\":\"CodeCommit Pull Request State Change\",\"region\":\"ap-northeast-1\",\"source\":\"aws.codecommit\",\"time\":\"2021-03-01T08:00:10Z\",\"notificationRuleArn\":\"arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/1367cd1289f44ede5c281338554d0cd7b1fd2e21\",\"detail\":{\"approvalStatus\":\"APPROVE\",\"sourceReference\":\"refs/heads/develop\",\"lastModifiedDate\":\"Mon Mar 01 07:54:01 UTC 2021\",\"author\":\"arn:aws:iam::XXXXXXXXXXXX:user/someone\",\"isMerged\":\"False\",\"pullRequestStatus\":\"Open\",\"notificationBody\":\"A pull request event occurred in the following AWS CodeCommit repository: aws-codecommit-notification-4-teams-test. User: arn:aws:iam::XXXXXXXXXXXX:user/someone. Event: Updated. Pull request name: 10. Additional information: A user has changed their approval state for the pull request. State change: APPROVE. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/aws-codecommit-notification-4-teams-test/pull-requests/10?region=ap-northeast-1.\",\"destinationReference\":\"refs/heads/main\",\"callerUserArn\":\"arn:aws:iam::XXXXXXXXXXXX:user/someone\",\"creationDate\":\"Mon Mar 01 07:54:01 UTC 2021\",\"pullRequestId\":\"10\",\"title\":\"prtest2\",\"revisionId\":\"71d9bd4f5f48c718329af149572ae19bfaaa7c2e3eaaf948f6d9e267236f0a5f\",\"repositoryNames\":[\"aws-codecommit-notification-4-teams-test\"],\"destinationCommit\":\"4c6a8db812321fc41eca5ffd17a766622a71118f\",\"event\":\"pullRequestApprovalStateChanged\",\"sourceCommit\":\"ba44315cc607113e88c615cc81d0341b104d28c6\"},\"resources\":[\"arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test\"],\"additionalAttributes\":{}}",
+        "MessageAttributes": {},
+        "MessageId": "70b71f67-00fe-5eb1-a943-47d1a1b23e86",
+        "Signature": "tvO8FioguKMt6JGHwVURKis0O6F8263nBP+xZf1NaIL+JwatHzi9PzH/6Fkqz0kEP5YjMpf0DdjOPmmVDHq5pphA8cCZEqTmjnYpQ4MpBdCqV5b47TgUQvLt/68TFsHfmMGLApz3hJoVqYsxjdAvbhsFSeUcc10JFCgK7Is4hBuRHpL2ugaw+KlRgP9WOhL/w5aSygwR/hObpAOXGYQ0dlRUhj53m75UZBMUPITus4LJrpYPrrdN5aCeQikGPhFWL5lB4cbPbaTFrFWGKWQygGL/+zQFDCJOe/CTgHjfF+BUtvv4HY2JzrepSZ+3lwxwXENJNDMses23T+Sckeuc1Q==",
+        "SignatureVersion": "1",
+        "SigningCertUrl": "https://sns.ap-northeast-1.amazonaws.com/SimpleNotificationService-010a507c1833636cd94bdb98bd93083a.pem",
+        "Subject": null,
+        "Timestamp": "2021-03-01T08:00:12.426Z",
+        "TopicArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test-SnsTopic-94BL1BGB64LN",
+        "Type": "Notification",
+        "UnsubscribeUrl": "https://sns.ap-northeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test-SnsTopic-94BL1BGB64LN:ec94d66d-0771-4ab5-bcff-25319f499dd9"
+      }
+    }
+  ]
+}

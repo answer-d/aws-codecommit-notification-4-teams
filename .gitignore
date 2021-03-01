@@ -245,7 +245,8 @@ $RECYCLE.BIN/
 
 .vscode/
 
-env-vars/**
-!env-vars/sample.json
+env_vars/**
+!env_vars/sample.json
 
 .aws-sam/
+samconfig.toml

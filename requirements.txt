@@ -1,6 +1,5 @@
 autopep8
 cfn-lint
 flake8
-# for development
 pre-commit
 yamllint

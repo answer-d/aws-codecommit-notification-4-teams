@@ -2,8 +2,8 @@
   "account": "XXXXXXXXXXXX",
   "additionalAttributes": {},
   "detail": {
-    "author": "arn:aws:iam::XXXXXXXXXXXX:user/yamaguti-dxa",
-    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/yamaguti-dxa",
+    "author": "arn:aws:iam::XXXXXXXXXXXX:user/someone",
+    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/someone",
     "creationDate": "Thu Sep 03 05:49:31 UTC 2020",
     "description": "hogehoge",
     "destinationCommit": "d02ee1f6b6b4a797a0bf796a3ff95eec77e283ba",
@@ -11,7 +11,7 @@
     "event": "pullRequestStatusChanged",
     "isMerged": "False",
     "lastModifiedDate": "Thu Sep 03 06:16:54 UTC 2020",
-    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: sample-repo-ansible. User: arn:aws:iam::XXXXXXXXXXXX:user/yamaguti-dxa. Event: Updated. Pull request name: 78. Additional information: The pull request status has been updated. The status is closed. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/sample-repo-ansible/pull-requests/78?region=ap-northeast-1.",
+    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: sample-repo-ansible. User: arn:aws:iam::XXXXXXXXXXXX:user/someone. Event: Updated. Pull request name: 78. Additional information: The pull request status has been updated. The status is closed. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/sample-repo-ansible/pull-requests/78?region=ap-northeast-1.",
     "pullRequestId": "78",
     "pullRequestStatus": "Closed",
     "repositoryNames": [

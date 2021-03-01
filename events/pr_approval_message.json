@@ -1,0 +1,33 @@
+{
+  "account": "521635626865",
+  "additionalAttributes": {},
+  "detail": {
+    "approvalStatus": "APPROVE",
+    "author": "arn:aws:iam::521635626865:user/yamaguti-dxa",
+    "callerUserArn": "arn:aws:iam::521635626865:user/ke-sato_nes",
+    "creationDate": "Mon Mar 01 07:54:01 UTC 2021",
+    "destinationCommit": "4c6a8db812321fc41eca5ffd17a766622a71118f",
+    "destinationReference": "refs/heads/main",
+    "event": "pullRequestApprovalStateChanged",
+    "isMerged": "False",
+    "lastModifiedDate": "Mon Mar 01 07:54:01 UTC 2021",
+    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: aws-codecommit-notification-4-teams-test. User: arn:aws:iam::521635626865:user/ke-sato_nes. Event: Updated. Pull request name: 10. Additional information: A user has changed their approval state for the pull request. State change: APPROVE. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/aws-codecommit-notification-4-teams-test/pull-requests/10?region=ap-northeast-1.",
+    "pullRequestId": "10",
+    "pullRequestStatus": "Open",
+    "repositoryNames": [
+      "aws-codecommit-notification-4-teams-test"
+    ],
+    "revisionId": "71d9bd4f5f48c718329af149572ae19bfaaa7c2e3eaaf948f6d9e267236f0a5f",
+    "sourceCommit": "ba44315cc607113e88c615cc81d0341b104d28c6",
+    "sourceReference": "refs/heads/develop",
+    "title": "prtest2"
+  },
+  "detailType": "CodeCommit Pull Request State Change",
+  "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-1:521635626865:notificationrule/1367cd1289f44ede5c281338554d0cd7b1fd2e21",
+  "region": "ap-northeast-1",
+  "resources": [
+    "arn:aws:codecommit:ap-northeast-1:521635626865:aws-codecommit-notification-4-teams-test"
+  ],
+  "source": "aws.codecommit",
+  "time": "2021-03-01T08:00:10Z"
+}

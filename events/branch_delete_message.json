@@ -2,7 +2,7 @@
   "account": "XXXXXXXXXXXX",
   "additionalAttributes": {},
   "detail": {
-    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/yamaguti-dxa",
+    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/someone",
     "event": "referenceDeleted",
     "oldCommitId": "e4bc1e00cb0dc3cc6bb33c0882a35638737d005e",
     "referenceFullName": "refs/heads/feature-implement-almost",

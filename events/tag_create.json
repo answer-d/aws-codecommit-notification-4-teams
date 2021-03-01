@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventSubscriptionArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test-SnsTopic-94BL1BGB64LN:ec94d66d-0771-4ab5-bcff-25319f499dd9",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Message": "{\"account\":\"XXXXXXXXXXXX\",\"detailType\":\"CodeCommit Repository State Change\",\"region\":\"ap-northeast-1\",\"source\":\"aws.codecommit\",\"time\":\"2021-03-01T07:30:30Z\",\"notificationRuleArn\":\"arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/1367cd1289f44ede5c281338554d0cd7b1fd2e21\",\"detail\":{\"referenceFullName\":\"refs/tags/tag-test\",\"repositoryId\":\"73d44299-37ec-491e-9cfe-ed0051aaf19b\",\"referenceType\":\"tag\",\"commitId\":\"4c6a8db812321fc41eca5ffd17a766622a71118f\",\"callerUserArn\":\"arn:aws:iam::XXXXXXXXXXXX:user/someone\",\"event\":\"referenceCreated\",\"repositoryName\":\"aws-codecommit-notification-4-teams-test\",\"referenceName\":\"tag-test\"},\"resources\":[\"arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test\"],\"additionalAttributes\":{}}",
+        "MessageAttributes": {},
+        "MessageId": "280a2498-4d1b-5224-b2d4-7c2ed743a37f",
+        "Signature": "c8EZq+LJHnNKCGMD4pn93ma/1MpyHbT6FJD5DdM8E7x6XWiYDJgJTagIrPl04hAqH9TBT+lcWdPSdfQS+LRmMGgP7zG5VwADk76HQt3XmeM+gLmFEXvpqLy4+Ic9F+JtBitpTa1KROH9QVsr+tO6txdlmCF2OgVJP9WSpFCNfhD7k2NA+cpyE6n+xRlddU0LKd6cIB4Lnw7WKqKM/QEmE+6jOa3NgMGySuYBJP5qrqTktt7GaL2HfQEGz0CujLEIFcIb+Q8qQwfsh0pqvTIApiRD9EdxCzSPbgojMtnmKu0Umw1tPUcCrw91d6BQxWtMCNisSF4PoAch0M60YGu8Xw==",
+        "SignatureVersion": "1",
+        "SigningCertUrl": "https://sns.ap-northeast-1.amazonaws.com/SimpleNotificationService-010a507c1833636cd94bdb98bd93083a.pem",
+        "Subject": null,
+        "Timestamp": "2021-03-01T07:30:32.165Z",
+        "TopicArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test-SnsTopic-94BL1BGB64LN",
+        "Type": "Notification",
+        "UnsubscribeUrl": "https://sns.ap-northeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test-SnsTopic-94BL1BGB64LN:ec94d66d-0771-4ab5-bcff-25319f499dd9"
+      }
+    }
+  ]
+}

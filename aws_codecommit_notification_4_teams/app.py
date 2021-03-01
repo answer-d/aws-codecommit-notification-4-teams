@@ -7,12 +7,11 @@ def lambda_handler(event, context):
     url = os.environ['HOOK_URL']
     ccard = pymsteams.connectorcard(url)
 
-    print({"url": url})
-    print({"event": event})
+    print(json.dumps(event))
 
     event_message = json.loads(event['Records'][0]['Sns']['Message'])
 
-    print({"event_message": event_message})
+    print(json.dumps(event_message))
 
     detail = event_message["detail"]
 
@@ -102,37 +101,9 @@ def lambda_handler(event, context):
 
     ccard.send()
 
-    print({
-        "message": event_message,
+    ret = {
         "status_code": ccard.last_http_status.status_code,
-    })
-
-    return ccard.last_http_status.status_code
-
-
-if __name__ == '__main__':
-    # test pr create
-    pr_create_event_json = json.load(open("fixture/pr_create.json", "r"))
-    lambda_handler(pr_create_event_json, {})
-
-    # test pr update
-    pr_update_event_json = json.load(open("fixture/pr_update.json", "r"))
-    lambda_handler(pr_update_event_json, {})
-
-    # test pr delete
-    pr_delete_event_json = json.load(open("fixture/pr_delete.json", "r"))
-    lambda_handler(pr_delete_event_json, {})
-
-    # test pr merged
-    pr_merged_event_json = json.load(open("fixture/pr_merged.json", "r"))
-    lambda_handler(pr_merged_event_json, {})
-
-    # test branch create
-    branch_create_event_json = json.load(
-        open("fixture/branch_create.json", "r"))
-    lambda_handler(branch_create_event_json, {})
-
-    # test branch delete
-    branch_delete_event_json = json.load(
-        open("fixture/branch_delete.json", "r"))
-    lambda_handler(branch_delete_event_json, {})
+        "payload": ccard.payload,
+    }
+    print(ret)
+    return ret

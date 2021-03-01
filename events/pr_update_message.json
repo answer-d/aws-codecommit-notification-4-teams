@@ -10,11 +10,11 @@
     "event": "pullRequestSourceBranchUpdated",
     "isMerged": "False",
     "lastModifiedDate": "Mon Aug 17 08:32:40 UTC 2020",
-    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: acos-rehost-ansible. User: arn:aws:sts::XXXXXXXXXXXX:assumed-role/C9Role/i-0cac28f8cc98b3bd6. Event: Updated. Pull request name: 68. Additional information: The pull request was updated with one or more commits to the source branch: refs/heads/feature-netbackup-install-re. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/acos-rehost-ansible/pull-requests/68?region=ap-northeast-1.",
+    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: reponame. User: arn:aws:sts::XXXXXXXXXXXX:assumed-role/C9Role/i-0cac28f8cc98b3bd6. Event: Updated. Pull request name: 68. Additional information: The pull request was updated with one or more commits to the source branch: refs/heads/feature-netbackup-install-re. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/reponame/pull-requests/68?region=ap-northeast-1.",
     "pullRequestId": "68",
     "pullRequestStatus": "Open",
     "repositoryNames": [
-      "acos-rehost-ansible"
+      "reponame"
     ],
     "revisionId": "249940b05b924e80b3080fedac362298c791232268d7561aa1d3b9a761a2356b",
     "sourceCommit": "e12c080d70f583f728bcf9614f98c36deca59163",
@@ -25,7 +25,7 @@
   "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/f242d49105e34091f05c6bd34956a57155a63307",
   "region": "ap-northeast-1",
   "resources": [
-    "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:acos-rehost-ansible"
+    "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:reponame"
   ],
   "source": "aws.codecommit",
   "time": "2020-08-17T08:32:52Z"

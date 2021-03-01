@@ -1,0 +1,33 @@
+{
+  "account": "XXXXXXXXXXXX",
+  "additionalAttributes": {
+    "commentedLine": "hogehoge",
+    "commentedLineNumber": "1",
+    "comments": [
+      {
+        "authorArn": "arn:aws:iam::XXXXXXXXXXXX:user/someone",
+        "commentText": "\u3089\u3044\u3093\u306b\u3053\u3081\u3093\u3068"
+      }
+    ],
+    "filePath": "test.txt",
+    "resourceArn": "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test"
+  },
+  "detail": {
+    "afterCommitId": "4c6a8db812321fc41eca5ffd17a766622a71118f",
+    "beforeCommitId": "11ddfe64960ba9d0b6ea308a53912794954a0bcf",
+    "callerUserArn": "arn:aws:iam::XXXXXXXXXXXX:user/someone",
+    "commentId": "742a52cd-a833-4a4a-818b-66b02c513f45:b5f6ab49-af4b-4a84-9c6b-a7d55cd1c3bd",
+    "event": "commentOnCommitCreated",
+    "notificationBody": "A comment event occurred in the following AWS CodeCommit repository: aws-codecommit-notification-4-teams-test. The user: arn:aws:iam::XXXXXXXXXXXX:user/someone made a comment or replied to a comment. The comment was made on a comparison between the following commits: 11ddfe64960ba9d0b6ea308a53912794954a0bcf : 4c6a8db812321fc41eca5ffd17a766622a71118f. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/aws-codecommit-notification-4-teams-test/compare/11ddfe64960ba9d0b6ea308a53912794954a0bcf/.../4c6a8db812321fc41eca5ffd17a766622a71118f?region=ap-northeast-1",
+    "repositoryId": "73d44299-37ec-491e-9cfe-ed0051aaf19b",
+    "repositoryName": "aws-codecommit-notification-4-teams-test"
+  },
+  "detailType": "CodeCommit Comment on Commit",
+  "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/1367cd1289f44ede5c281338554d0cd7b1fd2e21",
+  "region": "ap-northeast-1",
+  "resources": [
+    "arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test"
+  ],
+  "source": "aws.codecommit",
+  "time": "2021-03-01T07:11:05Z"
+}

@@ -1,0 +1,24 @@
+{
+  "event": {
+    "Records": [
+      {
+        "EventSource": "aws:sns",
+        "EventSubscriptionArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test-SnsTopic-94BL1BGB64LN:ec94d66d-0771-4ab5-bcff-25319f499dd9",
+        "EventVersion": "1.0",
+        "Sns": {
+          "Message": "{\"account\":\"XXXXXXXXXXXX\",\"detailType\":\"CodeCommit Comment on Commit\",\"region\":\"ap-northeast-1\",\"source\":\"aws.codecommit\",\"time\":\"2021-03-01T06:50:08Z\",\"notificationRuleArn\":\"arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/1367cd1289f44ede5c281338554d0cd7b1fd2e21\",\"detail\":{\"beforeCommitId\":\"11ddfe64960ba9d0b6ea308a53912794954a0bcf\",\"notificationBody\":\"A comment event occurred in the following AWS CodeCommit repository: aws-codecommit-notification-4-teams-test. The user: arn:aws:iam::XXXXXXXXXXXX:user/someone made a comment or replied to a comment. The comment was made on a comparison between the following commits: 11ddfe64960ba9d0b6ea308a53912794954a0bcf : 4c6a8db812321fc41eca5ffd17a766622a71118f. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/aws-codecommit-notification-4-teams-test/compare/11ddfe64960ba9d0b6ea308a53912794954a0bcf/.../4c6a8db812321fc41eca5ffd17a766622a71118f?region=ap-northeast-1\",\"repositoryId\":\"73d44299-37ec-491e-9cfe-ed0051aaf19b\",\"commentId\":\"d674b3d4-1189-4927-80b5-3d0b923e01fc:db6b64aa-8627-4eb1-a3c0-e675e2f34464\",\"afterCommitId\":\"4c6a8db812321fc41eca5ffd17a766622a71118f\",\"callerUserArn\":\"arn:aws:iam::XXXXXXXXXXXX:user/someone\",\"event\":\"commentOnCommitCreated\",\"repositoryName\":\"aws-codecommit-notification-4-teams-test\"},\"resources\":[\"arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test\"],\"additionalAttributes\":{\"commentedLine\":null,\"resourceArn\":\"arn:aws:codecommit:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test\",\"comments\":[{\"authorArn\":\"arn:aws:iam::XXXXXXXXXXXX:user/someone\",\"commentText\":\"\u307b\u3052\u307b\u3052\u30fc\"}],\"commentedLineNumber\":null,\"filePath\":null}}",
+          "MessageAttributes": {},
+          "MessageId": "9c745874-9602-5530-8281-00c206e03b86",
+          "Signature": "wC/pNLxgWB25FbuW6xLiiAPpSY7ez+WKND/Wvw6gMjpq+1VdGZnjGFx09jBzISYudzLbL9plaXRfMpeBVACBUmL9I396M08Mm2IQj+eAtrE4BZu/pKgBpPB7P3Vc2/zTSyUojCpjDDi6wsDK6mywNb9PAZ1xLhvGg55TL6VbNRNQd9s/gpxKXk3WXT5/CtcpxmR12hTtw6Q0eu91emzH2/nDzwJXXXi+aNkhWdFfWS+NlcL84LQZssBusYF0IwgsvEOdS3/CPlXYkGXUmjhUWk707AmBgw/4sA2VTs4357wtVJSgvvLnBG9H9lN9rJED+GwKLOQZOOZst4Vix8wkhw==",
+          "SignatureVersion": "1",
+          "SigningCertUrl": "https://sns.ap-northeast-1.amazonaws.com/SimpleNotificationService-010a507c1833636cd94bdb98bd93083a.pem",
+          "Subject": "None",
+          "Timestamp": "2021-03-01T06:50:10.127Z",
+          "TopicArn": "arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test-SnsTopic-94BL1BGB64LN",
+          "Type": "Notification",
+          "UnsubscribeUrl": "https://sns.ap-northeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-northeast-1:XXXXXXXXXXXX:aws-codecommit-notification-4-teams-test-SnsTopic-94BL1BGB64LN:ec94d66d-0771-4ab5-bcff-25319f499dd9"
+        }
+      }
+    ]
+  }
+}
