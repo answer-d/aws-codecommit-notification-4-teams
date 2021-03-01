@@ -35,7 +35,8 @@ Resources:
           HOOK_URL: !Ref HookUrl
 
   # 削除後にLogGroupが残り続ける問題に対応
-  # (参考) https://dev.classmethod.jp/articles/should-create-cloudwatch-logs-log-group-when-creating-lambda-with-aws-sam/
+  # yamllint disable-lint rule:line-length
+  # https://dev.classmethod.jp/articles/should-create-cloudwatch-logs-log-group-when-creating-lambda-with-aws-sam/
   FunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
