@@ -26,8 +26,8 @@ jobs:
       - name: Lint with flake8
         run: flake8 . --count --show-source --statistics
       - name: Lint with yamllint
-        run: yamllint .
+        run: yamllint -f github .
       - name: Lint with cfn-lint
-        run: cfn-lint template.yaml
+        run: cfn-lint -I template.yaml
       - name: Test with pytest (unit)
-        run: pytest tests/unit
+        run: pytest -v -l tests/unit
