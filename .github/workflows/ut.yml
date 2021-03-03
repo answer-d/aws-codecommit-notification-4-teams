@@ -1,5 +1,5 @@
 ---
-name: ut-python
+name: ut
 
 on: push
 
@@ -25,5 +25,9 @@ jobs:
             aws_codecommit_notification_4_teams/requirements.txt
       - name: Lint with flake8
         run: flake8 . --count --show-source --statistics
-      - name: Test with pytest
+      - name: Lint with yamllint
+        run: yamllint .
+      - name: Lint with cfn-lint
+        run: cfn-lint template.yaml
+      - name: Test with pytest (unit)
         run: pytest tests/unit
