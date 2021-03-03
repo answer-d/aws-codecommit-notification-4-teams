@@ -158,6 +158,7 @@ def generate_ccard_info_branch_and_tag(event_message) -> dict:
     detail = event_message["detail"]
 
     # とりあえずjsonまんま出す
+    ret['repository_name'] = detail["repositoryName"]
     ret['title'] = event_message["detailType"]
     ret['text'] = json.dumps(detail)
 
@@ -175,6 +176,7 @@ def generate_ccard_info_comment_on_commit(event_message) -> dict:
     detail = event_message["detail"]
 
     # とりあえずjsonまんま出す
+    ret['repository_name'] = detail["repositoryName"]
     ret['title'] = event_message["detailType"]
     ret['text'] = json.dumps(detail)
 
@@ -188,6 +190,7 @@ def generate_ccard_info_comment_on_pr(event_message) -> dict:
     detail = event_message["detail"]
 
     # とりあえずjsonまんま出す
+    ret['repository_name'] = detail["repositoryName"]
     ret['title'] = event_message["detailType"]
     ret['text'] = json.dumps(detail)
 

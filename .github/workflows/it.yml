@@ -10,39 +10,93 @@ jobs:
   it:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
     steps:
       - uses: actions/checkout@v2
+
+      - name: Assume Role
+        uses: youyo/awscredswrap@master
+        with:
+          role_arn: ${{ secrets.ROLE_ARN }}
+          duration_seconds: 3600
+          role_session_name: 'awscredswrap@GitHubActions'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Validate with sam validate
-        uses: youyo/aws-sam-action@v2.0.1
+        uses: youyo/aws-sam-action/python3.8@v2
         with:
           sam_command: validate
           actions_comment: true
-      - name: Build application with sam build
-        uses: youyo/aws-sam-action@v2.0.1
-        with:
-          sam_command: build --use-container
-      - name: Generate uuid
-        id: generate-uuid
-        uses: filipstefansson/uuid-action@v1
-      - name: Deploy application with sam deploy
-        uses: youyo/aws-sam-action@v2.0.1
-        with:
-          sam_command: deploy --stack-name \
-              ${{ github.repository }}-${{ steps.generate_uuid.outputs.uuid }}\
-            --no-confirm-changeset\
-            --parameter-overrides HookUrl=${{ secrets.HOOK_URL }}
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build application with sam build
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: build
 
-      - name: Destroy stack
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r tests/requirements.txt
+          python -m pip install -r \
+            aws_codecommit_notification_4_teams/requirements.txt
+
+      - id: generate-uuid
+        run: echo "::set-output name=uuid::$(uuidgen | cut -c 1-8)"
+        shell: bash
+
+      - name: Create S3 bucket
         uses: ItsKarma/aws-cli@v1.70.0
         with:
-          args: cloudformation delete-stack\
-            --stack-name\
-            ${{ github.repository }}-${{ steps.generate_uuid.outputs.uuid }}
+          args: "s3api create-bucket --bucket \
+            aws-codecommit-notification-4-teams-ci-\
+            ${{ steps.generate-uuid.outputs.uuid }} \
+            --create-bucket-configuration \
+            LocationConstraint=${{ secrets.AWS_DEFAULT_REGION }}"
+      - name: Deploy application with sam deploy
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: "deploy \
+            --stack-name ${{ env.AWS_SAM_STACK_NAME }} \
+            --s3-bucket ${{ env.AWS_SAM_STACK_NAME }} \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --no-confirm-changeset \
+            --role-arn ${{ secrets.CFN_ROLE_ARN }} \
+            --parameter-overrides HookUrl=${{ secrets.HOOK_URL }}"
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_SAM_STACK_NAME: "aws-codecommit-notification-4-teams-ci-\
+            ${{ steps.generate-uuid.outputs.uuid }}"
+
+      - name: Test with pytest (integration)
+        run: pytest -v -l tests/integration
+        env:
+          AWS_SAM_STACK_NAME: "aws-codecommit-notification-4-teams-ci-\
+            ${{ steps.generate-uuid.outputs.uuid }}"
+
+      - name: Destroy cloudformation stack
+        uses: ItsKarma/aws-cli@v1.70.0
+        with:
+          args: "cloudformation delete-stack --stack-name \
+            aws-codecommit-notification-4-teams-ci-\
+            ${{ steps.generate-uuid.outputs.uuid }}"
+        if: ${{ always() }}
+      - name: Delete all objects in S3 bucket
+        uses: ItsKarma/aws-cli@v1.70.0
+        with:
+          args: "s3 rm s3://aws-codecommit-notification-4-teams-ci-\
+            ${{ steps.generate-uuid.outputs.uuid }} \
+            --recursive"
+        if: ${{ always() }}
+      - name: Delete S3 bucket
+        uses: ItsKarma/aws-cli@v1.70.0
+        with:
+          args: "s3 rb s3://aws-codecommit-notification-4-teams-ci-\
+            ${{ steps.generate-uuid.outputs.uuid }}"
+        if: ${{ always() }}
