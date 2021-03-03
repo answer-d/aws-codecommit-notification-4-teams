@@ -85,6 +85,9 @@ Outputs:
   FunctionIamRole:
     Description: "Implicit IAM Role created for Function"
     Value: !GetAtt FunctionRole.Arn
+  FunctionName:
+    Description: "Lambda Function Name"
+    Value: !Ref Function
   SnsTopic:
     Description: "SNS Topic ARN"
     Value: !Ref SnsTopic

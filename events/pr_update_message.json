@@ -2,7 +2,7 @@
   "account": "XXXXXXXXXXXX",
   "additionalAttributes": {},
   "detail": {
-    "author": "arn:aws:iam::XXXXXXXXXXXX:user/ko.watanabe",
+    "author": "arn:aws:iam::XXXXXXXXXXXX:user/someone",
     "callerUserArn": "arn:aws:sts::XXXXXXXXXXXX:assumed-role/C9Role/i-0cac28f8cc98b3bd6",
     "creationDate": "Fri Jul 31 01:40:25 UTC 2020",
     "destinationCommit": "cb3706c953d783a55fcb481f31c2669d46f49784",
@@ -10,7 +10,7 @@
     "event": "pullRequestSourceBranchUpdated",
     "isMerged": "False",
     "lastModifiedDate": "Mon Aug 17 08:32:40 UTC 2020",
-    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: reponame. User: arn:aws:sts::XXXXXXXXXXXX:assumed-role/C9Role/i-0cac28f8cc98b3bd6. Event: Updated. Pull request name: 68. Additional information: The pull request was updated with one or more commits to the source branch: refs/heads/feature-netbackup-install-re. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/reponame/pull-requests/68?region=ap-northeast-1.",
+    "notificationBody": "A pull request event occurred in the following AWS CodeCommit repository: reponame. User: arn:aws:sts::XXXXXXXXXXXX:assumed-role/C9Role/i-0cac28f8cc98b3bd6. Event: Updated. Pull request name: 68. Additional information: The pull request was updated with one or more commits to the source branch: refs/heads/ponponpain. For more information, go to the AWS CodeCommit console https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories/reponame/pull-requests/68?region=ap-northeast-1.",
     "pullRequestId": "68",
     "pullRequestStatus": "Open",
     "repositoryNames": [
@@ -18,8 +18,8 @@
     ],
     "revisionId": "249940b05b924e80b3080fedac362298c791232268d7561aa1d3b9a761a2356b",
     "sourceCommit": "e12c080d70f583f728bcf9614f98c36deca59163",
-    "sourceReference": "refs/heads/feature-netbackup-install-re",
-    "title": "NetBackup Install \u30b3\u30f3\u30d5\u30ea\u30af\u30c8\u89e3\u6d88\u6e08\u307f"
+    "sourceReference": "refs/heads/ponponpain",
+    "title": "onakaita-i"
   },
   "detailType": "CodeCommit Pull Request State Change",
   "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-1:XXXXXXXXXXXX:notificationrule/f242d49105e34091f05c6bd34956a57155a63307",

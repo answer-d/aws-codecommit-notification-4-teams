@@ -4,101 +4,40 @@ import os
 
 
 def lambda_handler(event, context):
-    url = os.environ['HOOK_URL']
-    ccard = pymsteams.connectorcard(url)
-
     print(json.dumps(event))
-
     event_message = json.loads(event['Records'][0]['Sns']['Message'])
-
+    ccard_info = {
+        'url': os.environ['HOOK_URL']
+    }
     print(json.dumps(event_message))
 
-    detail = event_message["detail"]
-
-    # PR関連イベント
+    # pr event
     if event_message["detailType"] == "CodeCommit Pull Request State Change":
-        repository_name = detail["repositoryNames"][0]
-        notificationBody = detail["notificationBody"]
+        ccard_info.update(generate_ccard_info_pr(event_message))
+    # branch/tag event
+    elif event_message["detailType"] == "CodeCommit Repository State Change":
+        ccard_info.update(generate_ccard_info_branch_and_tag(event_message))
+    # comment on commit event
+    elif event_message["detailType"] == "CodeCommit Comment on Commit":
+        ccard_info.update(generate_ccard_info_comment_on_commit(event_message))
+    # comment on pr event
+    elif event_message["detailType"] == "CodeCommit Comment on Pull Request":
+        ccard_info.update(generate_ccard_info_comment_on_pr(event_message))
 
-        # リポジトリ名によって色変える
-        if "ansible" in repository_name:
-            ccard.color("#ff5750")
-        elif "terraform" in repository_name:
-            ccard.color("#623CE4")
+    # todo: def set_color_by_reponame()
+    if "ansible" in ccard_info['repository_name']:
+        ccard_info['color'] = "#ff5750"
+    elif "terraform" in ccard_info['repository_name']:
+        ccard_info['color'] = "#623CE4"
 
-        # PR作成
-        if detail["event"] == "pullRequestCreated":
-            ccard.title("PRが作成されました！")
-            ccard.summary("dummy")
-        # PR更新
-        elif detail["event"] == "pullRequestSourceBranchUpdated":
-            ccard.title("PRが更新されました！")
-            ccard.summary("dummy")
-        # PR削除
-        elif detail["event"] == "pullRequestStatusChanged" and \
-                detail["isMerged"] == "False":
-            ccard.title("PRがクローズされました！")
-            ccard.text("マージしてないよ")
-        # PRマージ
-        elif detail["event"] == "pullRequestMergeStatusUpdated" and \
-                detail["isMerged"] == "True":
-            ccard.title("PRがマージされました！")
-            ccard.text("ご対応ありがとうございました！")
-        # その他
-        else:
-            ccard.title("PRに何かしらの変更がありやす")
-            ccard.text(json.dumps(detail))
+    # todo: def set_image_by_reponame()
+    if "ansible" in ccard_info['repository_name']:
+        ccard_info['activity_image'] = "https://xxx"
+    elif "terraform" in ccard_info['repository_name']:
+        ccard_info['activity_image'] = "https://xxx"
 
-        # 共通情報
-        pr_id = detail["pullRequestId"]
-        title = detail["title"]
-        if "description" in detail.keys():
-            description = detail["description"]
-        source_branch_name = detail["sourceReference"].split("/")[-1]
-        dest_branch_name = detail["destinationReference"].split("/")[-1]
-        pr_url = notificationBody[notificationBody.rfind("https://"):-1]
-        author_name = detail["author"].split("/")[-1]
-
-        section_info = pymsteams.cardsection()
-        section_info.activityTitle(repository_name)
-        section_info.activitySubtitle(title)
-        if "description" in locals():
-            section_info.activityText(description)
-
-        if "ansible" in repository_name:
-            section_info.activityImage("https://xxx")
-        elif "terraform" in repository_name:
-            section_info.activityImage("https://xxx")
-
-        section_info.addFact("作成者", author_name)
-        section_info.addFact(
-            "ブランチ", f"{source_branch_name} -> {dest_branch_name}")
-
-        # PRマージ
-        if detail["event"] == "pullRequestMergeStatusUpdated" and\
-                detail["isMerged"] == "True":
-            merge_username = detail["callerUserArn"].split("/")[-1]
-            commit_id = detail["destinationCommit"]
-            section_info.addFact("マージした人", merge_username)
-            section_info.addFact("コミットID", commit_id)
-
-        ccard.addSection(section_info)
-        ccard.addLinkButton(f"Jump to Pull Request {pr_id}", pr_url)
-
-    # その他のイベント
-    else:
-        repository_name = detail["repositoryName"]
-
-        # リポジトリ名によって色変える
-        if "ansible" in repository_name:
-            ccard.color("#ff5750")
-        elif "terraform" in repository_name:
-            ccard.color("#623CE4")
-
-        # とりあえずjsonまんま出す
-        ccard.title(event_message["detailType"])
-        ccard.text(json.dumps(detail))
-
+    print(ccard_info)
+    ccard = create_ccard(**ccard_info)
     ccard.send()
 
     ret = {
@@ -106,4 +45,152 @@ def lambda_handler(event, context):
         "payload": ccard.payload,
     }
     print(ret)
+
+    return ret
+
+
+def create_ccard(url, title, repository_name, **kwargs):
+    ccard = pymsteams.connectorcard(url)
+
+    # 発生したイベントを入れる(PR作成、ブランチ更新など)
+    ccard.title(title)
+
+    # イベントに対する補足情報があれば入れる
+    # (PRクローズ時「マージしてないよ」などの注意喚起)
+    # textが無い場合はsummaryに何か文字を入れないとエラーになるので適当に入れとく
+    if "text" in kwargs:
+        ccard.text(kwargs.get("text"))
+    else:
+        ccard.summary("dummy")
+
+    # TODO: 色付けの仕方(環境変数とか？)
+    if "color" in kwargs:
+        ccard.color(kwargs.get("color"))
+
+    section_info = pymsteams.cardsection()
+
+    # リポジトリ名
+    section_info.activityTitle(repository_name)
+
+    # カード内に表示する画像、サイズ制限あり(上限忘れた)
+    # TODO: 画像の選び方(S3？)
+    if "activity_image" in kwargs:
+        section_info.activityImage(kwargs.get("activity_image"))
+
+    # PRタイトルなど
+    if "section_info_title" in kwargs:
+        section_info.activitySubtitle(kwargs.get("section_info_title"))
+
+    # PRの備考などの補足情報(強調しなくて良いやつ)
+    if "description" in kwargs:
+        section_info.activityText(kwargs.get("description"))
+
+    # PR作成者、PRリクエスト詳細などの補足情報(割と強調したいやつ)
+    if "facts" in kwargs:
+        for key, value in kwargs.get("facts").items():
+            section_info.addFact(key, value)
+
+    ccard.addSection(section_info)
+
+    # PRやコミットへのリンク
+    if "link_button_url" in kwargs:
+        ccard.addLinkButton(
+            kwargs.get("link_button_text"),
+            kwargs.get("link_button_url")
+        )
+
+    return ccard
+
+
+def generate_ccard_info_pr(event_message) -> dict:
+    ret = {}
+    detail = event_message["detail"]
+
+    pr_id = detail["pullRequestId"]
+    source_branch_name = detail["sourceReference"].split("/")[-1]
+    dest_branch_name = detail["destinationReference"].split("/")[-1]
+    notificationBody = detail["notificationBody"]
+    pr_url = notificationBody[notificationBody.rfind("https://"):-1]
+    author_name = detail["author"].split("/")[-1]
+
+    # common
+    ret['repository_name'] = detail["repositoryNames"][0]
+    ret['section_info_title'] = detail["title"]
+    if "description" in detail.keys():
+        ret['description'] = detail["description"]
+    ret['facts'] = {
+        "作成者": author_name,
+        "ブランチ": f"{source_branch_name} -> {dest_branch_name}",
+    }
+    ret['link_button_text'] = f"Jump to Pull Request {pr_id}"
+    ret['link_button_url'] = pr_url
+
+    if detail["event"] == "pullRequestCreated":
+        ret['title'] = "PRが作成されました！"
+    elif detail["event"] == "pullRequestSourceBranchUpdated":
+        ret['title'] = "PRが更新されました！"
+    elif detail["event"] == "pullRequestStatusChanged" and \
+            detail["isMerged"] == "False":
+        ret['title'] = "PRがクローズされました！"
+        ret['text'] = "マージしてないよ"
+    elif detail["event"] == "pullRequestMergeStatusUpdated" and \
+            detail["isMerged"] == "True":
+        ret['title'] = "PRがマージされました！"
+        ret['text'] = "ご対応ありがとうございました！"
+
+        merge_username = detail["callerUserArn"].split("/")[-1]
+        commit_id = detail["destinationCommit"]
+        ret['facts'].update({
+            "マージした人": merge_username,
+            "コミットID": commit_id,
+        })
+    # todo: pr_approval
+    # todo: pr_approval_override
+    else:
+        ret['title'] = "PRに何かしらの変更がありやす"
+        ret['text'] = json.dumps(detail)
+
+    return ret
+
+
+def generate_ccard_info_branch_and_tag(event_message) -> dict:
+    ret = {}
+    detail = event_message["detail"]
+
+    # とりあえずjsonまんま出す
+    ret['title'] = event_message["detailType"]
+    ret['text'] = json.dumps(detail)
+
+    # todo: branch_create
+    # todo: branch_delete
+    # todo: branch_update
+    # todo: tag_create
+    # todo: tag_delete
+
+    return ret
+
+
+def generate_ccard_info_comment_on_commit(event_message) -> dict:
+    ret = {}
+    detail = event_message["detail"]
+
+    # とりあえずjsonまんま出す
+    ret['title'] = event_message["detailType"]
+    ret['text'] = json.dumps(detail)
+
+    # todo: comment_on_commit
+
+    return ret
+
+
+def generate_ccard_info_comment_on_pr(event_message) -> dict:
+    ret = {}
+    detail = event_message["detail"]
+
+    # とりあえずjsonまんま出す
+    ret['title'] = event_message["detailType"]
+    ret['text'] = json.dumps(detail)
+
+    # todo: comment_on_pr
+
     return ret
