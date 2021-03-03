@@ -4,7 +4,7 @@ name: ut
 on: push
 
 jobs:
-  build:
+  ut:
     runs-on: ubuntu-latest
     strategy:
       matrix:
