@@ -1,5 +1,8 @@
 # aws-codecommit-notification-4-teams
 
+[![ut](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/ut.yml/badge.svg)](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/ut.yml)
+[![it](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/it.yml/badge.svg)](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/it.yml)
+
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
 
 - hello_world - Code for the application's Lambda function.
