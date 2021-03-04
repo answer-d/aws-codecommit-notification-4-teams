@@ -74,8 +74,8 @@ class TestApp(TestCase):
         self.codecommit_repo = self.client_codecommit.create_repository(
             repositoryName=self.repository_name,
             tags={
-              'Service': 'aws-codecommit-notification-4-teams',
-              'Purpose': 'CI'
+                'Service': 'aws-codecommit-notification-4-teams',
+                'Purpose': 'CI'
             },
         )
 
@@ -103,8 +103,8 @@ class TestApp(TestCase):
             }],
             DetailType='FULL',
             Tags={
-              'Service': 'aws-codecommit-notification-4-teams',
-              'Purpose': 'CI',
+                'Service': 'aws-codecommit-notification-4-teams',
+                'Purpose': 'CI',
             },
         )
 
@@ -119,22 +119,23 @@ class TestApp(TestCase):
     def test_pr_accept_flow(self):
         """
         実際にCodeCommitに対して変更を行い、Lambdaが発火していることを確認する
-        シナリオ(発生イベント数=13)
-          - mainブランチ作成+コミット
-          - コミットにコメント
-          - featureブランチ作成+コミット
-          - PR作成
-          - PRにコメント
-          - featureブランチ更新
-            - PR更新イベントが同時に発生
-          - PR承認
-          - PRマージ+ブランチ削除
-          - タグ付け
+        シナリオ(発生イベント数=12)
+        1. mainブランチにコミット
+        2. コミットにコメント
+        3. featureブランチ作成+コミット
+        4. PR作成
+        5. PRにコメント
+        6. featureブランチ更新
+           PR更新イベントが同時に発生する
+        7. PR承認
+        8. PRマージ+ブランチ削除
+        9. タグ付け
         """
 
         dt_before = datetime.datetime.now()
 
-        self.client_codecommit.create_commit(
+        # 1. mainブランチにコミット
+        commit_1 = self.client_codecommit.create_commit(
             repositoryName=self.repository_name,
             branchName='main',
             putFiles=[
@@ -144,11 +145,22 @@ class TestApp(TestCase):
                 }
             ],
         )
+        # 2. コミットにコメント
+        self.client_codecommit.post_comment_for_compared_commit(
+            repositoryName=self.repository_name,
+            afterCommitId=commit_1["commitId"],
+            location={
+                'filePath': commit_1['filesAdded'][0]['absolutePath'],
+                'filePosition': 1,
+                'relativeFileVersion': 'AFTER',
+            },
+            content="そうだね、SAMはいいね",
+        )
 
         # todo: シナリオの実装
 
         # Lambda処理待ち(クソ実装です！！！！！)
-        time.sleep(420)
+        time.sleep(480)
 
         dt_after = datetime.datetime.now()
 
@@ -170,8 +182,9 @@ class TestApp(TestCase):
 
         print({"statistics_invocation": statistics_invocation})
 
+        # change this value when add/remove steps
         self.assertGreaterEqual(
-            sum([x['Sum'] for x in statistics_invocation['Datapoints']]), 1.0,
+            sum([x['Sum'] for x in statistics_invocation['Datapoints']]), 2.0,
             "Lambda function has not been invoked properly"
         )
 

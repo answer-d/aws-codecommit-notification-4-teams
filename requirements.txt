@@ -1,4 +1,6 @@
 autopep8
+aws-sam-cli
+awscli
 cfn-lint
 flake8
 pre-commit

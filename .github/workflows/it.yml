@@ -24,7 +24,7 @@ jobs:
         with:
           role_arn: ${{ secrets.ROLE_ARN }}
           duration_seconds: 3600
-          role_session_name: 'awscredswrap@GitHubActions'
+          role_session_name: "awscredswrap@GitHubActions"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -69,7 +69,7 @@ jobs:
           sam_command: "deploy \
             --stack-name ${{ env.AWS_SAM_STACK_NAME }} \
             --s3-bucket ${{ env.AWS_SAM_STACK_NAME }} \
-            --capabilities CAPABILITY_NAMED_IAM \
+            --capabilities CAPABILITY_IAM \
             --no-confirm-changeset \
             --role-arn ${{ secrets.CFN_ROLE_ARN }} \
             --parameter-overrides HookUrl=${{ secrets.HOOK_URL }}"
