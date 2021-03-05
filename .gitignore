@@ -250,3 +250,5 @@ env_vars/**
 
 .aws-sam/
 samconfig.toml
+
+.envrc
