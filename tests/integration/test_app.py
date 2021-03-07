@@ -119,23 +119,23 @@ class TestApp(TestCase):
     def test_pr_accept_flow(self):
         """
         実際にCodeCommitに対して変更を行い、Lambdaが発火していることを確認する
-        シナリオ(発生イベント数=12)
+        シナリオ(発生イベント数=11)
         1. mainブランチにコミット
         2. コミットにコメント
-        3. featureブランチ作成+コミット
-        4. PR作成
-        5. PRにコメント
-        6. featureブランチ更新
-           PR更新イベントが同時に発生する
-        7. PR承認
-        8. PRマージ+ブランチ削除
-        9. タグ付け
+        3. featureブランチ作成
+        5. PR作成
+        6. PRにコメント
+        7. featureブランチ更新
+           -> PR更新イベントが同時に発生する
+        8. PR承認
+        9. PRマージ
+        10. ブランチ削除
         """
 
         dt_before = datetime.datetime.now()
 
         # 1. mainブランチにコミット
-        commit_1 = self.client_codecommit.create_commit(
+        commit_main = self.client_codecommit.create_commit(
             repositoryName=self.repository_name,
             branchName='main',
             putFiles=[
@@ -148,19 +148,113 @@ class TestApp(TestCase):
         # 2. コミットにコメント
         self.client_codecommit.post_comment_for_compared_commit(
             repositoryName=self.repository_name,
-            afterCommitId=commit_1["commitId"],
+            afterCommitId=commit_main["commitId"],
             location={
-                'filePath': commit_1['filesAdded'][0]['absolutePath'],
+                'filePath': commit_main['filesAdded'][0]['absolutePath'],
                 'filePosition': 1,
                 'relativeFileVersion': 'AFTER',
             },
             content="そうだね、SAMはいいね",
         )
+        # 3. featureブランチ作成
+        feature_branch_name = 'feature/hogehoge'
+        self.client_codecommit.create_branch(
+            repositoryName=self.repository_name,
+            branchName=feature_branch_name,
+            commitId=commit_main["commitId"],
+        )
+        commit_feature = self.client_codecommit.create_commit(
+            repositoryName=self.repository_name,
+            branchName=feature_branch_name,
+            parentCommitId=commit_main["commitId"],
+            putFiles=[
+                {
+                    'filePath': 'test.txt',
+                    'fileContent': '手作業はいいぞ',
+                }
+            ],
+        )
+        # 5. PR作成
+        pr = self.client_codecommit.create_pull_request(
+            title='add test.txt',
+            targets=[
+                {
+                    'repositoryName': self.repository_name,
+                    'sourceReference': feature_branch_name,
+                    'destinationReference': 'main',
+                }
+            ]
+        )
+        # 6. PRにコメント
+        self.client_codecommit.post_comment_for_pull_request(
+            pullRequestId=pr["pullRequest"]["pullRequestId"],
+            repositoryName=self.repository_name,
+            beforeCommitId=pr["pullRequest"]["pullRequestTargets"][0]
+            ["destinationCommit"],
+            afterCommitId=pr["pullRequest"]["pullRequestTargets"][0]
+            ["sourceCommit"],
+            location={
+                'filePath': commit_feature['filesAdded'][0]['absolutePath'],
+                'filePosition': 1,
+                'relativeFileVersion': 'AFTER',
+            },
+            content="いや、手作業は良くないね",
+        )
+        # 7. featureブランチ更新
+        #    -> PR更新イベントが同時に発生する
+        self.client_codecommit.create_commit(
+            repositoryName=self.repository_name,
+            branchName=feature_branch_name,
+            parentCommitId=commit_feature["commitId"],
+            putFiles=[
+                {
+                    'filePath': 'test.txt',
+                    'fileContent': 'IaCはいいぞ',
+                }
+            ],
+        )
+        # 8. PR承認
+        # 自身が作成したPRは承認できないためAssumeRoleして実施する
+        client_sts = boto3.client('sts')
+        role_arn = os.environ.get('ANOTHER_ROLE_ARN')
+        region_name = os.environ.get('AWS_DEFAULT_REGION')
+        sts_resp = client_sts.assume_role(
+            RoleArn=role_arn,
+            RoleSessionName=f"awscredswrap@it-{TestApp.get_stack_name()}"
+        )
+        session_pr_approve = boto3.Session(
+            aws_access_key_id=sts_resp['Credentials']['AccessKeyId'],
+            aws_secret_access_key=sts_resp['Credentials']['SecretAccessKey'],
+            aws_session_token=sts_resp['Credentials']['SessionToken'],
+            region_name=region_name,
+        )
 
-        # todo: シナリオの実装
+        # PRの最新リビジョンIDを拾うため情報取得
+        pr_recent = self.client_codecommit.get_pull_request(
+            pullRequestId=pr["pullRequest"]["pullRequestId"]
+        )
 
-        # Lambda処理待ち(クソ実装です！！！！！)
-        time.sleep(480)
+        client_codecommit_assumed = session_pr_approve.client('codecommit')
+        client_codecommit_assumed.update_pull_request_approval_state(
+            pullRequestId=pr_recent["pullRequest"]["pullRequestId"],
+            revisionId=pr_recent["pullRequest"]["revisionId"],
+            approvalState="APPROVE",
+        )
+        # 9. PRマージ
+        self.client_codecommit.merge_pull_request_by_three_way(
+            pullRequestId=pr["pullRequest"]["pullRequestId"],
+            repositoryName=self.repository_name,
+        )
+        # 10. ブランチ削除
+        self.client_codecommit.delete_branch(
+            repositoryName=self.repository_name,
+            branchName=feature_branch_name,
+        )
+
+        # Lambda処理待ち (クソ実装 of the year 受賞中)
+        if not os.environ.get("AWS_SAM_SKIP_IT_WAIT"):
+            print(":coffee: coffee break...")
+            time.sleep(600)
 
         dt_after = datetime.datetime.now()
 
@@ -184,7 +278,7 @@ class TestApp(TestCase):
 
         # change this value when add/remove steps
         self.assertGreaterEqual(
-            sum([x['Sum'] for x in statistics_invocation['Datapoints']]), 2.0,
+            sum([x['Sum'] for x in statistics_invocation['Datapoints']]), 11.0,
             "Lambda function has not been invoked properly"
         )
 

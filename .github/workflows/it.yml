@@ -82,6 +82,7 @@ jobs:
         env:
           AWS_SAM_STACK_NAME: "aws-codecommit-notification-4-teams-ci-\
             ${{ steps.generate-uuid.outputs.uuid }}"
+          ANOTHER_ROLE_ARN: ${{ secrets.ANOTHER_ROLE_ARN}}
 
       - name: Destroy cloudformation stack
         uses: ItsKarma/aws-cli@v1.70.0
