@@ -144,11 +144,27 @@ def generate_ccard_info_pr(event_message) -> dict:
             "マージした人": merge_username,
             "コミットID": commit_id,
         })
-    # todo: pr_approval
-    # todo: pr_approval_override
+    elif detail["event"] == "pullRequestApprovalStateChanged" and \
+            detail["approvalStatus"] == "APPROVE":
+        ret['title'] = "PRが承認されました！"
+        ret['text'] = "LGTM！"
+
+        approve_username = detail["callerUserArn"].split("/")[-1]
+        ret['facts'].update({
+            "承認した人": approve_username,
+        })
+    elif detail["event"] == "pullRequestApprovalRuleOverridden":
+        ret['title'] = "PRが強制的に承認されました！"
+
+        override_username = detail["callerUserArn"].split("/")[-1]
+        ret['facts'].update({
+            "強制承認した人": override_username,
+        })
     else:
-        ret['title'] = "PRに何かしらの変更がありやす"
-        ret['text'] = json.dumps(detail)
+        raise Exception(
+            f"Cannot detect event type({detail['event']})\n"
+            f"event_message: {event_message}"
+        )
 
     return ret
 
