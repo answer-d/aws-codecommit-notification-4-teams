@@ -111,7 +111,7 @@ def generate_ccard_info_pr(event_message) -> dict:
     dest_branch_name = detail["destinationReference"].split("/")[-1]
     notificationBody = detail["notificationBody"]
     pr_url = notificationBody[notificationBody.rfind("https://"):-1]
-    author_name = detail["author"].split("/")[-1]
+    author_name = detail["author"].split(":")[-1]
 
     # common
     ret['repository_name'] = detail["repositoryNames"][0]
@@ -138,7 +138,7 @@ def generate_ccard_info_pr(event_message) -> dict:
         ret['title'] = "PRがマージされました！"
         ret['text'] = "ご対応ありがとうございました！"
 
-        merge_username = detail["callerUserArn"].split("/")[-1]
+        merge_username = detail["callerUserArn"].split(":")[-1]
         commit_id = detail["destinationCommit"]
         ret['facts'].update({
             "マージした人": merge_username,
@@ -173,16 +173,36 @@ def generate_ccard_info_branch_and_tag(event_message) -> dict:
     ret = {}
     detail = event_message["detail"]
 
-    # とりあえずjsonまんま出す
+    # common
     ret['repository_name'] = detail["repositoryName"]
-    ret['title'] = event_message["detailType"]
-    ret['text'] = json.dumps(detail)
+    ret['section_info_title'] = detail["referenceName"]
 
-    # todo: branch_create
-    # todo: branch_delete
-    # todo: branch_update
-    # todo: tag_create
-    # todo: tag_delete
+    caller_username = detail["callerUserArn"].split(":")[-1]
+    if detail['referenceType'] == 'branch' and \
+            detail['event'] == 'referenceCreated':
+        ret['title'] = "ブランチが作成されました！"
+        ret['facts'] = {'作成者': caller_username}
+    elif detail['referenceType'] == 'branch' and \
+            detail['event'] == 'referenceDeleted':
+        ret['title'] = "ブランチが削除されました！"
+        ret['facts'] = {'削除した人': caller_username}
+    elif detail['referenceType'] == 'branch' and \
+            detail['event'] == 'referenceUpdated':
+        ret['title'] = "ブランチが更新されました！"
+        ret['facts'] = {'更新した人': caller_username}
+    elif detail['referenceType'] == 'tag' and \
+            detail['event'] == 'referenceCreated':
+        ret['title'] = "タグが作成されました！"
+        ret['facts'] = {'作成者': caller_username}
+    elif detail['referenceType'] == 'tag' and \
+            detail['event'] == 'referenceDeleted':
+        ret['title'] = "タグが削除されました！"
+        ret['facts'] = {'削除した人': caller_username}
+    else:
+        raise Exception(
+            f"Cannot detect event type({detail['event']})\n"
+            f"event_message: {event_message}"
+        )
 
     return ret
 
