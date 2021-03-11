@@ -27,4 +27,4 @@ jobs:
       - name: Lint with cfn-lint
         run: cfn-lint -I template.yaml
       - name: Test with pytest (unit)
-        run: pytest -v -l tests/unit
+        run: py.test tests/unit

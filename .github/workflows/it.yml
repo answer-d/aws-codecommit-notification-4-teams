@@ -78,7 +78,7 @@ jobs:
             ${{ steps.generate-uuid.outputs.uuid }}"
 
       - name: Test with pytest (integration)
-        run: pytest -v -l tests/integration
+        run: py.test tests/integration
         env:
           AWS_SAM_STACK_NAME: "aws-codecommit-notification-4-teams-ci-\
             ${{ steps.generate-uuid.outputs.uuid }}"

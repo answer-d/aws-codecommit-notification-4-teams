@@ -1,8 +1,8 @@
 import os
 import uuid
 import time
-import datetime
 from unittest import TestCase
+from datetime import datetime, timezone
 
 import boto3
 
@@ -119,20 +119,21 @@ class TestApp(TestCase):
     def test_pr_accept_flow(self):
         """
         実際にCodeCommitに対して変更を行い、Lambdaが発火していることを確認する
-        シナリオ(発生イベント数=11)
-        1. mainブランチにコミット
-        2. コミットにコメント
-        3. featureブランチ作成
-        5. PR作成
-        6. PRにコメント
-        7. featureブランチ更新
-           -> PR更新イベントが同時に発生する
-        8. PR承認
-        9. PRマージ
-        10. ブランチ削除
+        1.  mainブランチにコミット
+        2.  コミットにコメント
+        3.  featureブランチ作成
+        5.  PR作成
+        6.  PRにコメント
+        7.  featureブランチ更新
+            -> PR更新イベントが同時に発生する
+        8.  PR承認
+        9.  PR承認のオーバーライド
+        10. PRマージ
+            -> ブランチ更新イベントが同時に発生する
+        11. ブランチ削除
         """
 
-        dt_before = datetime.datetime.now()
+        dt_before = datetime.now(timezone.utc)
 
         # 1. mainブランチにコミット
         commit_main = self.client_codecommit.create_commit(
@@ -240,12 +241,19 @@ class TestApp(TestCase):
             revisionId=pr_recent["pullRequest"]["revisionId"],
             approvalState="APPROVE",
         )
-        # 9. PRマージ
+        # 9. PR承認のオーバーライド
+        self.client_codecommit.override_pull_request_approval_rules(
+            pullRequestId=pr_recent["pullRequest"]["pullRequestId"],
+            revisionId=pr_recent["pullRequest"]["revisionId"],
+            overrideStatus='OVERRIDE'
+        )
+        # 10. PRマージ
+        #     -> ブランチ更新イベントが同時に発生する
         self.client_codecommit.merge_pull_request_by_three_way(
             pullRequestId=pr["pullRequest"]["pullRequestId"],
             repositoryName=self.repository_name,
         )
-        # 10. ブランチ削除
+        # 11. ブランチ削除
         self.client_codecommit.delete_branch(
             repositoryName=self.repository_name,
             branchName=feature_branch_name,
@@ -253,10 +261,15 @@ class TestApp(TestCase):
 
         # Lambda処理待ち (クソ実装 of the year 受賞中)
         if not os.environ.get("AWS_SAM_SKIP_IT_WAIT"):
-            print(":coffee: coffee break...")
-            time.sleep(600)
+            print(f"{chr(int(0x2615))} coffee break...")
+            time.sleep(10 * 60)
 
-        dt_after = datetime.datetime.now()
+        dt_after = datetime.now(timezone.utc)
+
+        print({
+            "dt_before": dt_before,
+            "dt_after": dt_after,
+        })
 
         client_cloudwatch = boto3.client("cloudwatch")
 
@@ -276,9 +289,9 @@ class TestApp(TestCase):
 
         print({"statistics_invocation": statistics_invocation})
 
-        # change this value when add/remove steps
-        self.assertGreaterEqual(
-            sum([x['Sum'] for x in statistics_invocation['Datapoints']]), 11.0,
+        # ステップを追加したらここの数値を変更
+        self.assertEqual(
+            sum([x['Sum'] for x in statistics_invocation['Datapoints']]), 13.0,
             "Lambda function has not been invoked properly"
         )
 

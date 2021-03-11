@@ -9,25 +9,44 @@ from aws_codecommit_notification_4_teams import app
 @pytest.fixture(scope='module')
 def pr_create_event():
     return json.load(open(
-        os.path.dirname(__file__) + "/../../events/pr_create.json", "r"))
+        os.path.dirname(__file__) + "/../../events/pr_create.json", "r")
+    )
 
 
 @pytest.fixture(scope='module')
 def pr_delete_event():
     return json.load(open(
-        os.path.dirname(__file__) + "/../../events/pr_delete.json", "r"))
+        os.path.dirname(__file__) + "/../../events/pr_delete.json", "r")
+    )
 
 
 @pytest.fixture(scope='module')
 def pr_merged_event():
     return json.load(open(
-        os.path.dirname(__file__) + "/../../events/pr_merged.json", "r"))
+        os.path.dirname(__file__) + "/../../events/pr_merged.json", "r")
+    )
 
 
 @pytest.fixture(scope='module')
 def pr_update_event():
     return json.load(open(
-        os.path.dirname(__file__) + "/../../events/pr_update.json", "r"))
+        os.path.dirname(__file__) + "/../../events/pr_update.json", "r")
+    )
+
+
+@pytest.fixture(scope='module')
+def pr_approval_event():
+    return json.load(open(
+        os.path.dirname(__file__) + "/../../events/pr_approval.json", "r")
+    )
+
+
+@pytest.fixture(scope='module')
+def pr_approval_override_event():
+    return json.load(open(
+        os.path.dirname(__file__) +
+        "/../../events/pr_approval_override.json", "r")
+    )
 
 
 def test_generate_ccard_info_pr_create(pr_create_event):
@@ -42,8 +61,8 @@ def test_generate_ccard_info_pr_create(pr_create_event):
     assert ret['facts']['作成者'] == 'someone'
     assert ret['facts']['ブランチ'] == 'feature-implement-almost -> master'
     assert ret['link_button_text'] == 'Jump to Pull Request 78'
-    assert ret['link_button_url'] == 'https://ap-northeast-1.console.'\
-        'aws.amazon.com/codesuite/codecommit/repositories/'\
+    assert ret['link_button_url'] == 'https://ap-northeast-1.console.' \
+        'aws.amazon.com/codesuite/codecommit/repositories/' \
         'sample-repo-ansible/pull-requests/78?region=ap-northeast-1'
 
 
@@ -59,8 +78,8 @@ def test_generate_ccard_info_pr_delete(pr_delete_event):
     assert ret['facts']['作成者'] == 'someone'
     assert ret['facts']['ブランチ'] == 'feature-implement-almost -> master'
     assert ret['link_button_text'] == 'Jump to Pull Request 78'
-    assert ret['link_button_url'] == 'https://ap-northeast-1.console.'\
-        'aws.amazon.com/codesuite/codecommit/repositories/'\
+    assert ret['link_button_url'] == 'https://ap-northeast-1.console.' \
+        'aws.amazon.com/codesuite/codecommit/repositories/' \
         'sample-repo-ansible/pull-requests/78?region=ap-northeast-1'
 
 
@@ -77,11 +96,11 @@ def test_generate_ccard_info_pr_merged(pr_merged_event):
     assert ret['facts']['作成者'] == 'someone'
     assert ret['facts']['ブランチ'] == 'testtest -> master'
     assert ret['facts']['マージした人'] == 'someone'
-    assert ret['facts']['コミットID'] == '01fb3163f4bcc8faa4f05c4'\
+    assert ret['facts']['コミットID'] == '01fb3163f4bcc8faa4f05c4' \
         '1852db52c21146a96'
     assert ret['link_button_text'] == 'Jump to Pull Request 80'
-    assert ret['link_button_url'] == 'https://ap-northeast-1.console.'\
-        'aws.amazon.com/codesuite/codecommit/repositories/'\
+    assert ret['link_button_url'] == 'https://ap-northeast-1.console.' \
+        'aws.amazon.com/codesuite/codecommit/repositories/' \
         'sample-repo-terraform/pull-requests/80?region=ap-northeast-1'
 
 
@@ -97,6 +116,40 @@ def test_generate_ccard_info_pr_update(pr_update_event):
     assert ret['facts']['作成者'] == 'someone'
     assert ret['facts']['ブランチ'] == 'ponponpain -> master'
     assert ret['link_button_text'] == 'Jump to Pull Request 68'
-    assert ret['link_button_url'] == 'https://ap-northeast-1.console'\
-        '.aws.amazon.com/codesuite/codecommit/repositories/'\
+    assert ret['link_button_url'] == 'https://ap-northeast-1.console' \
+        '.aws.amazon.com/codesuite/codecommit/repositories/' \
         'reponame/pull-requests/68?region=ap-northeast-1'
+
+
+def test_generate_ccard_info_pr_approve(pr_approval_event):
+    ret = app.generate_ccard_info_pr(
+        json.loads(pr_approval_event['Records'][0]['Sns']['Message'])
+    )
+
+    assert ret['title'] == 'PRが承認されました！'
+    assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
+    assert ret['section_info_title'] == 'prtest2'
+    assert 'description' not in ret.keys()
+    assert ret['facts']['承認した人'] == 'someone'
+    assert ret['link_button_text'] == 'Jump to Pull Request 10'
+    assert ret['link_button_url'] == 'https://ap-northeast-1.console' \
+        '.aws.amazon.com/codesuite/codecommit/repositories/' \
+        'aws-codecommit-notification-4-teams-test/' \
+        'pull-requests/10?region=ap-northeast-1'
+
+
+def test_generate_ccard_info_pr_approval_override(pr_approval_override_event):
+    ret = app.generate_ccard_info_pr(
+        json.loads(pr_approval_override_event['Records'][0]['Sns']['Message'])
+    )
+
+    assert ret['title'] == 'PRが強制的に承認されました！'
+    assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
+    assert ret['section_info_title'] == 'pr_test'
+    assert ret['description'] == 'update'
+    assert ret['facts']['強制承認した人'] == 'someone'
+    assert ret['link_button_text'] == 'Jump to Pull Request 9'
+    assert ret['link_button_url'] == 'https://ap-northeast-1.console' \
+        '.aws.amazon.com/codesuite/codecommit/repositories/' \
+        'aws-codecommit-notification-4-teams-test/' \
+        'pull-requests/9?region=ap-northeast-1'
