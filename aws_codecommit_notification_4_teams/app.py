@@ -11,18 +11,17 @@ def lambda_handler(event, context):
     }
     print(json.dumps(event_message))
 
+    detail_type = event_message["detailType"]
     # pr event
-    if event_message["detailType"] == "CodeCommit Pull Request State Change":
+    if detail_type == "CodeCommit Pull Request State Change":
         ccard_info.update(generate_ccard_info_pr(event_message))
     # branch/tag event
-    elif event_message["detailType"] == "CodeCommit Repository State Change":
+    elif detail_type == "CodeCommit Repository State Change":
         ccard_info.update(generate_ccard_info_branch_and_tag(event_message))
-    # comment on commit event
-    elif event_message["detailType"] == "CodeCommit Comment on Commit":
-        ccard_info.update(generate_ccard_info_comment_on_commit(event_message))
-    # comment on pr event
-    elif event_message["detailType"] == "CodeCommit Comment on Pull Request":
-        ccard_info.update(generate_ccard_info_comment_on_pr(event_message))
+    # comment event
+    elif detail_type == "CodeCommit Comment on Commit" or \
+            detail_type == "CodeCommit Comment on Pull Request":
+        ccard_info.update(generate_ccard_info_comment(event_message))
 
     # todo: def set_color_by_reponame()
     if "ansible" in ccard_info['repository_name']:
@@ -109,8 +108,8 @@ def generate_ccard_info_pr(event_message) -> dict:
     pr_id = detail["pullRequestId"]
     source_branch_name = detail["sourceReference"].split("/")[-1]
     dest_branch_name = detail["destinationReference"].split("/")[-1]
-    notificationBody = detail["notificationBody"]
-    pr_url = notificationBody[notificationBody.rfind("https://"):-1]
+    notification_body = detail["notificationBody"]
+    pr_url = notification_body[notification_body.rfind("https://"):-1]
     author_name = detail["author"].split(":")[-1]
 
     # common
@@ -149,14 +148,14 @@ def generate_ccard_info_pr(event_message) -> dict:
         ret['title'] = "PRが承認されました！"
         ret['text'] = "LGTM！"
 
-        approve_username = detail["callerUserArn"].split("/")[-1]
+        approve_username = detail["callerUserArn"].split(":")[-1]
         ret['facts'].update({
             "承認した人": approve_username,
         })
     elif detail["event"] == "pullRequestApprovalRuleOverridden":
         ret['title'] = "PRが強制的に承認されました！"
 
-        override_username = detail["callerUserArn"].split("/")[-1]
+        override_username = detail["callerUserArn"].split(":")[-1]
         ret['facts'].update({
             "強制承認した人": override_username,
         })
@@ -207,29 +206,26 @@ def generate_ccard_info_branch_and_tag(event_message) -> dict:
     return ret
 
 
-def generate_ccard_info_comment_on_commit(event_message) -> dict:
+def generate_ccard_info_comment(event_message) -> dict:
     ret = {}
     detail = event_message["detail"]
 
-    # とりあえずjsonまんま出す
+    # common
     ret['repository_name'] = detail["repositoryName"]
-    ret['title'] = event_message["detailType"]
-    ret['text'] = json.dumps(detail)
 
-    # todo: comment_on_commit
+    commenter_username = detail["callerUserArn"].split(":")[-1]
+    ret['facts'] = {
+        'コメントした人': commenter_username,
+    }
 
-    return ret
+    notification_body = detail["notificationBody"]
+    comment_url = notification_body[notification_body.rfind("https://"):]
+    ret['link_button_text'] = 'View Comment'
+    ret['link_button_url'] = comment_url
 
-
-def generate_ccard_info_comment_on_pr(event_message) -> dict:
-    ret = {}
-    detail = event_message["detail"]
-
-    # とりあえずjsonまんま出す
-    ret['repository_name'] = detail["repositoryName"]
-    ret['title'] = event_message["detailType"]
-    ret['text'] = json.dumps(detail)
-
-    # todo: comment_on_pr
+    if detail['event'] == "commentOnPullRequestCreated":
+        ret['title'] = 'PRにコメントが付きました！'
+    elif detail['event'] == "commentOnCommitCreated":
+        ret['title'] = 'コメントが付きました！'
 
     return ret
