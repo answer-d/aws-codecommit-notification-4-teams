@@ -84,6 +84,37 @@ def tag_delete_event():
     )
 
 
+@pytest.fixture(scope='module')
+def comment_on_commit_event():
+    return json.load(open(
+        os.path.dirname(__file__) +
+        "/../../events/comment_on_commit.json", "r")
+    )
+
+
+@pytest.fixture(scope='module')
+def comment_on_commit_on_line_event():
+    return json.load(open(
+        os.path.dirname(__file__) +
+        "/../../events/comment_on_commit_on_line.json", "r")
+    )
+
+
+@pytest.fixture(scope='module')
+def comment_on_pr_event():
+    return json.load(open(
+        os.path.dirname(__file__) + "/../../events/comment_on_pr.json", "r")
+    )
+
+
+@pytest.fixture(scope='module')
+def comment_on_pr_on_line_event():
+    return json.load(open(
+        os.path.dirname(__file__) +
+        "/../../events/comment_on_pr_on_line.json", "r")
+    )
+
+
 def test_generate_ccard_info_pr_create(pr_create_event):
     ret = app.generate_ccard_info_pr(
         json.loads(pr_create_event['Records'][0]['Sns']['Message'])
@@ -165,7 +196,7 @@ def test_generate_ccard_info_pr_approve(pr_approval_event):
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['section_info_title'] == 'prtest2'
     assert 'description' not in ret.keys()
-    assert ret['facts']['承認した人'] == 'someone'
+    assert ret['facts']['承認した人'] == 'user/someone'
     assert ret['link_button_text'] == 'Jump to Pull Request 10'
     assert ret['link_button_url'] == 'https://ap-northeast-1.console' \
         '.aws.amazon.com/codesuite/codecommit/repositories/' \
@@ -182,7 +213,7 @@ def test_generate_ccard_info_pr_approval_override(pr_approval_override_event):
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['section_info_title'] == 'pr_test'
     assert ret['description'] == 'update'
-    assert ret['facts']['強制承認した人'] == 'someone'
+    assert ret['facts']['強制承認した人'] == 'user/someone'
     assert ret['link_button_text'] == 'Jump to Pull Request 9'
     assert ret['link_button_url'] == 'https://ap-northeast-1.console' \
         '.aws.amazon.com/codesuite/codecommit/repositories/' \
@@ -258,3 +289,72 @@ def test_generate_ccard_info_tag_delete(tag_delete_event):
     assert ret['facts']['削除した人'] == 'user/someone'
     assert 'link_button_text' not in ret.keys()
     assert 'link_button_url' not in ret.keys()
+
+
+def test_generate_ccard_info_comment_on_commit(comment_on_commit_event):
+    ret = app.generate_ccard_info_comment(
+        json.loads(comment_on_commit_event['Records'][0]['Sns']['Message'])
+    )
+
+    assert ret['title'] == 'コメントが付きました！'
+    assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
+    assert ret['facts']['コメントした人'] == 'user/someone'
+    assert ret['link_button_text'] == 'View Comment'
+    assert ret['link_button_url'] == \
+        'https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/' \
+        'repositories/aws-codecommit-notification-4-teams-test/' \
+        'compare/11ddfe64960ba9d0b6ea308a53912794954a0bcf/' \
+        '.../4c6a8db812321fc41eca5ffd17a766622a71118f?region=ap-northeast-1'
+
+
+def test_generate_ccard_info_comment_on_commit_on_line(
+        comment_on_commit_on_line_event):
+    ret = app.generate_ccard_info_comment(
+        json.loads(
+            comment_on_commit_on_line_event['Records'][0]['Sns']['Message'])
+    )
+
+    assert ret['title'] == 'コメントが付きました！'
+    assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
+    assert ret['facts']['コメントした人'] == 'user/someone'
+    assert ret['link_button_text'] == 'View Comment'
+    assert ret['link_button_url'] == \
+        "https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/" \
+        "repositories/aws-codecommit-notification-4-teams-test/compare/" \
+        "11ddfe64960ba9d0b6ea308a53912794954a0bcf/.../" \
+        "4c6a8db812321fc41eca5ffd17a766622a71118f?region=ap-northeast-1"
+
+
+def test_generate_ccard_info_comment_on_pr(comment_on_pr_event):
+    ret = app.generate_ccard_info_comment(
+        json.loads(comment_on_pr_event['Records'][0]['Sns']['Message'])
+    )
+
+    assert ret['title'] == 'PRにコメントが付きました！'
+    assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
+    assert ret['facts']['コメントした人'] == 'user/someone'
+    assert ret['link_button_text'] == 'View Comment'
+    assert ret['link_button_url'] == \
+        'https://ap-northeast-1.console.aws.amazon.com/codesuite/' \
+        'codecommit/repositories/aws-codecommit-notification-4-teams-test/' \
+        'pull-requests/9/activity#' \
+        'd37f1364-af13-40b6-b3f2-9d5686cd38a4%' \
+        '3A11a7d06f-ffb0-4bb9-9ab9-510f0e70f137?region=ap-northeast-1'
+
+
+def test_generate_ccard_info_comment_on_pr_on_line(
+        comment_on_pr_on_line_event):
+    ret = app.generate_ccard_info_comment(
+        json.loads(comment_on_pr_on_line_event['Records'][0]['Sns']['Message'])
+    )
+
+    assert ret['title'] == 'PRにコメントが付きました！'
+    assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
+    assert ret['facts']['コメントした人'] == 'user/someone'
+    assert ret['link_button_text'] == 'View Comment'
+    assert ret['link_button_url'] == \
+        'https://ap-northeast-1.console.aws.amazon.com/codesuite/' \
+        'codecommit/repositories/aws-codecommit-notification-4-teams-test/' \
+        'pull-requests/9/activity#' \
+        'c81cbb49-7142-43d8-ab21-99f3d3096af2%' \
+        '3Aa3895391-025a-45e4-a2cc-98079038ee13?region=ap-northeast-1'
