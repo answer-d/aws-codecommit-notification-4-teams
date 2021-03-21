@@ -143,6 +143,7 @@ def test_generate_ccard_info_pr_delete(pr_delete_event):
     assert ret['description'] == 'hogehoge'
     assert ret['facts']['作成者'] == 'user/someone'
     assert ret['facts']['ブランチ'] == 'feature-implement-almost -> master'
+    assert ret['facts']['クローズした人'] == 'user/someone'
     assert ret['link_button_text'] == 'Jump to Pull Request 78'
     assert ret['link_button_url'] == 'https://ap-northeast-1.console.' \
         'aws.amazon.com/codesuite/codecommit/repositories/' \
@@ -181,6 +182,7 @@ def test_generate_ccard_info_pr_update(pr_update_event):
     assert 'description' not in ret.keys()
     assert ret['facts']['作成者'] == 'user/someone'
     assert ret['facts']['ブランチ'] == 'ponponpain -> master'
+    assert ret['facts']['更新した人'] == 'assumed-role/C9Role/i-0cac28f8cc98b3bd6'
     assert ret['link_button_text'] == 'Jump to Pull Request 68'
     assert ret['link_button_url'] == 'https://ap-northeast-1.console' \
         '.aws.amazon.com/codesuite/codecommit/repositories/' \

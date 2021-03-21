@@ -124,23 +124,29 @@ def generate_ccard_info_pr(event_message) -> dict:
     ret['link_button_text'] = f"Jump to Pull Request {pr_id}"
     ret['link_button_url'] = pr_url
 
+    caller_username = detail["callerUserArn"].split(":")[-1]
     if detail["event"] == "pullRequestCreated":
         ret['title'] = "PRが作成されました！"
     elif detail["event"] == "pullRequestSourceBranchUpdated":
         ret['title'] = "PRが更新されました！"
+        ret['facts'].update({
+            "更新した人": caller_username
+        })
     elif detail["event"] == "pullRequestStatusChanged" and \
             detail["isMerged"] == "False":
         ret['title'] = "PRがクローズされました！"
         ret['text'] = "マージしてないよ"
+        ret['facts'].update({
+            "クローズした人": caller_username
+        })
     elif detail["event"] == "pullRequestMergeStatusUpdated" and \
             detail["isMerged"] == "True":
         ret['title'] = "PRがマージされました！"
         ret['text'] = "ご対応ありがとうございました！"
 
-        merge_username = detail["callerUserArn"].split(":")[-1]
         commit_id = detail["destinationCommit"]
         ret['facts'].update({
-            "マージした人": merge_username,
+            "マージした人": caller_username,
             "コミットID": commit_id,
         })
     elif detail["event"] == "pullRequestApprovalStateChanged" and \
