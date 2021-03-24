@@ -115,11 +115,52 @@ def comment_on_pr_on_line_event():
     )
 
 
+def test_create_ccard():
+    args = {
+        "title": "title test",
+        "repository_name": "test-repo",
+        "url": "https://samhaiizo.example.com",
+        "text": "text test",
+        "summary": "summary test",
+        "color": "#ffffff",
+        "activity_image": "https://activity.image.test",
+        "section_info_title": "section info title test",
+        "description": "description test",
+        "facts": {"testkey": "testvalue"},
+        "link_button_text": "link button test",
+        "link_button_url": "https://link.button.test",
+    }
+
+    ret = app.create_ccard(**args)
+
+    assert args['title'] == ret.payload['title']
+    assert args['repository_name'] == \
+        ret.payload['sections'][0]['activityTitle']
+    assert args['url'] == ret.hookurl
+    assert args['text'] == ret.payload['text']
+    assert args['summary'] == ret.payload['summary']
+    assert args['color'] == ret.payload['themeColor']
+    assert args['activity_image'] == \
+        ret.payload['sections'][0]['activityImage']
+    assert args['section_info_title'] == \
+        ret.payload['sections'][0]['activitySubtitle']
+    assert args['description'] == ret.payload['sections'][0]['activityText']
+    assert 'testkey' == ret.payload['sections'][0]['facts'][0]['name']
+    assert args['facts']['testkey'] == \
+        ret.payload['sections'][0]['facts'][0]['value']
+    assert args['link_button_text'] == \
+        ret.payload['potentialAction'][0]['name']
+    assert args['link_button_url'] == \
+        ret.payload['potentialAction'][0]['target'][0]
+
+
 def test_generate_ccard_info_pr_create(pr_create_event):
     ret = app.generate_ccard_info_pr(
         json.loads(pr_create_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "sample-repo-ansible: PR作成 \"\u3060\u3044\u305f\u3044\u5b9f\u88c5\""
     assert ret['title'] == 'PRが作成されました！'
     assert ret['repository_name'] == 'sample-repo-ansible'
     assert ret['section_info_title'] == "\u3060\u3044\u305f\u3044\u5b9f\u88c5"
@@ -137,6 +178,9 @@ def test_generate_ccard_info_pr_delete(pr_delete_event):
         json.loads(pr_delete_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "sample-repo-ansible: PRクローズ " \
+        "\"\u3060\u3044\u305f\u3044\u5b9f\u88c5\" by user/someone"
     assert ret['title'] == 'PRがクローズされました！'
     assert ret['repository_name'] == 'sample-repo-ansible'
     assert ret['section_info_title'] == "\u3060\u3044\u305f\u3044\u5b9f\u88c5"
@@ -155,6 +199,9 @@ def test_generate_ccard_info_pr_merged(pr_merged_event):
         json.loads(pr_merged_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "sample-repo-terraform: PRマージ " \
+        "\"\u30c6\u30b9\u30c8\uff5e\uff5e\uff5e\" by user/someone"
     assert ret['title'] == 'PRがマージされました！'
     assert ret['text'] == 'ご対応ありがとうございました！'
     assert ret['repository_name'] == 'sample-repo-terraform'
@@ -176,6 +223,7 @@ def test_generate_ccard_info_pr_update(pr_update_event):
         json.loads(pr_update_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == "reponame: PR更新 \"onakaita-i\""
     assert ret['title'] == 'PRが更新されました！'
     assert ret['repository_name'] == 'reponame'
     assert ret['section_info_title'] == "onakaita-i"
@@ -194,6 +242,9 @@ def test_generate_ccard_info_pr_approve(pr_approval_event):
         json.loads(pr_approval_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "aws-codecommit-notification-4-teams-test: PR承認 \"prtest2\" " \
+        "by user/someone"
     assert ret['title'] == 'PRが承認されました！'
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['section_info_title'] == 'prtest2'
@@ -211,6 +262,9 @@ def test_generate_ccard_info_pr_approval_override(pr_approval_override_event):
         json.loads(pr_approval_override_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "aws-codecommit-notification-4-teams-test: PR承認(強制) \"pr_test\" " \
+        "by user/someone"
     assert ret['title'] == 'PRが強制的に承認されました！'
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['section_info_title'] == 'pr_test'
@@ -228,6 +282,8 @@ def test_generate_ccard_info_branch_create(branch_create_event):
         json.loads(branch_create_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "sample-repo-ansible: ブランチ作成 \"feature-implement-almost\""
     assert ret['title'] == 'ブランチが作成されました！'
     assert ret['repository_name'] == 'sample-repo-ansible'
     assert ret['section_info_title'] == 'feature-implement-almost'
@@ -242,6 +298,8 @@ def test_generate_ccard_info_branch_delete(branch_delete_event):
         json.loads(branch_delete_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "sample-repo-ansible: ブランチ削除 \"feature-implement-almost\""
     assert ret['title'] == 'ブランチが削除されました！'
     assert ret['repository_name'] == 'sample-repo-ansible'
     assert ret['section_info_title'] == 'feature-implement-almost'
@@ -256,6 +314,8 @@ def test_generate_ccard_info_branch_update(branch_update_event):
         json.loads(branch_update_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "aws-codecommit-notification-4-teams-test: ブランチ更新 \"main\""
     assert ret['title'] == 'ブランチが更新されました！'
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['section_info_title'] == 'main'
@@ -270,6 +330,8 @@ def test_generate_ccard_info_tag_create(tag_create_event):
         json.loads(tag_create_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "aws-codecommit-notification-4-teams-test: タグ作成 \"tag-test\""
     assert ret['title'] == 'タグが作成されました！'
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['section_info_title'] == 'tag-test'
@@ -284,6 +346,8 @@ def test_generate_ccard_info_tag_delete(tag_delete_event):
         json.loads(tag_delete_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "aws-codecommit-notification-4-teams-test: タグ削除 \"tag-test\""
     assert ret['title'] == 'タグが削除されました！'
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['section_info_title'] == 'tag-test'
@@ -298,6 +362,8 @@ def test_generate_ccard_info_comment_on_commit(comment_on_commit_event):
         json.loads(comment_on_commit_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "aws-codecommit-notification-4-teams-test: コメント by user/someone"
     assert ret['title'] == 'コメントが付きました！'
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['facts']['コメントした人'] == 'user/someone'
@@ -316,6 +382,8 @@ def test_generate_ccard_info_comment_on_commit_on_line(
             comment_on_commit_on_line_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "aws-codecommit-notification-4-teams-test: コメント by user/someone"
     assert ret['title'] == 'コメントが付きました！'
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['facts']['コメントした人'] == 'user/someone'
@@ -332,6 +400,8 @@ def test_generate_ccard_info_comment_on_pr(comment_on_pr_event):
         json.loads(comment_on_pr_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "aws-codecommit-notification-4-teams-test: コメント by user/someone"
     assert ret['title'] == 'PRにコメントが付きました！'
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['facts']['コメントした人'] == 'user/someone'
@@ -350,6 +420,8 @@ def test_generate_ccard_info_comment_on_pr_on_line(
         json.loads(comment_on_pr_on_line_event['Records'][0]['Sns']['Message'])
     )
 
+    assert ret['summary'] == \
+        "aws-codecommit-notification-4-teams-test: コメント by user/someone"
     assert ret['title'] == 'PRにコメントが付きました！'
     assert ret['repository_name'] == 'aws-codecommit-notification-4-teams-test'
     assert ret['facts']['コメントした人'] == 'user/someone'

@@ -56,11 +56,12 @@ def create_ccard(url, title, repository_name, **kwargs):
 
     # イベントに対する補足情報があれば入れる
     # (PRクローズ時「マージしてないよ」などの注意喚起)
-    # textが無い場合はsummaryに何か文字を入れないとエラーになるので適当に入れとく
     if "text" in kwargs:
         ccard.text(kwargs.get("text"))
-    else:
-        ccard.summary("dummy")
+
+    # サマリは通知に出る
+    if "summary" in kwargs:
+        ccard.summary(kwargs.get("summary"))
 
     # TODO: 色付けの仕方(環境変数とか？)
     if "color" in kwargs:
@@ -127,14 +128,21 @@ def generate_ccard_info_pr(event_message) -> dict:
     caller_username = detail["callerUserArn"].split(":")[-1]
     if detail["event"] == "pullRequestCreated":
         ret['title'] = "PRが作成されました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: PR作成 \"{ret['section_info_title']}\""
     elif detail["event"] == "pullRequestSourceBranchUpdated":
         ret['title'] = "PRが更新されました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: PR更新 \"{ret['section_info_title']}\""
         ret['facts'].update({
             "更新した人": caller_username
         })
     elif detail["event"] == "pullRequestStatusChanged" and \
             detail["isMerged"] == "False":
         ret['title'] = "PRがクローズされました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: PRクローズ " \
+            f"\"{ret['section_info_title']}\" by {caller_username}"
         ret['text'] = "マージしてないよ"
         ret['facts'].update({
             "クローズした人": caller_username
@@ -142,6 +150,9 @@ def generate_ccard_info_pr(event_message) -> dict:
     elif detail["event"] == "pullRequestMergeStatusUpdated" and \
             detail["isMerged"] == "True":
         ret['title'] = "PRがマージされました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: PRマージ " \
+            f"\"{ret['section_info_title']}\" by {caller_username}"
         ret['text'] = "ご対応ありがとうございました！"
 
         commit_id = detail["destinationCommit"]
@@ -152,18 +163,22 @@ def generate_ccard_info_pr(event_message) -> dict:
     elif detail["event"] == "pullRequestApprovalStateChanged" and \
             detail["approvalStatus"] == "APPROVE":
         ret['title'] = "PRが承認されました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: PR承認 " \
+            f"\"{ret['section_info_title']}\" by {caller_username}"
         ret['text'] = "LGTM！"
 
-        approve_username = detail["callerUserArn"].split(":")[-1]
         ret['facts'].update({
-            "承認した人": approve_username,
+            "承認した人": caller_username,
         })
     elif detail["event"] == "pullRequestApprovalRuleOverridden":
         ret['title'] = "PRが強制的に承認されました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: PR承認(強制) " \
+            f"\"{ret['section_info_title']}\" by {caller_username}"
 
-        override_username = detail["callerUserArn"].split(":")[-1]
         ret['facts'].update({
-            "強制承認した人": override_username,
+            "強制承認した人": caller_username,
         })
     else:
         raise Exception(
@@ -186,22 +201,32 @@ def generate_ccard_info_branch_and_tag(event_message) -> dict:
     if detail['referenceType'] == 'branch' and \
             detail['event'] == 'referenceCreated':
         ret['title'] = "ブランチが作成されました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: ブランチ作成 \"{ret['section_info_title']}\""
         ret['facts'] = {'作成者': caller_username}
     elif detail['referenceType'] == 'branch' and \
             detail['event'] == 'referenceDeleted':
         ret['title'] = "ブランチが削除されました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: ブランチ削除 \"{ret['section_info_title']}\""
         ret['facts'] = {'削除した人': caller_username}
     elif detail['referenceType'] == 'branch' and \
             detail['event'] == 'referenceUpdated':
         ret['title'] = "ブランチが更新されました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: ブランチ更新 \"{ret['section_info_title']}\""
         ret['facts'] = {'更新した人': caller_username}
     elif detail['referenceType'] == 'tag' and \
             detail['event'] == 'referenceCreated':
         ret['title'] = "タグが作成されました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: タグ作成 \"{ret['section_info_title']}\""
         ret['facts'] = {'作成者': caller_username}
     elif detail['referenceType'] == 'tag' and \
             detail['event'] == 'referenceDeleted':
         ret['title'] = "タグが削除されました！"
+        ret['summary'] = \
+            f"{ret['repository_name']}: タグ削除 \"{ret['section_info_title']}\""
         ret['facts'] = {'削除した人': caller_username}
     else:
         raise Exception(
@@ -228,6 +253,8 @@ def generate_ccard_info_comment(event_message) -> dict:
     comment_url = notification_body[notification_body.rfind("https://"):]
     ret['link_button_text'] = 'View Comment'
     ret['link_button_url'] = comment_url
+    ret['summary'] = \
+        f"{ret['repository_name']}: コメント by {commenter_username}"
 
     if detail['event'] == "commentOnPullRequestCreated":
         ret['title'] = 'PRにコメントが付きました！'
