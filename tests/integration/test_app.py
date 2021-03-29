@@ -79,8 +79,8 @@ class TestApp(TestCase):
                 'Notification4TeamsColorCode': "007627",
                 "Notification4TeamsImageUrl":
                     "https://raw.githubusercontent.com/answer-d/"
-                    "aws-codecommit-notification-4-teams/answer-d/"
-                    "issue3/tests/integration/girigiri_neko.jpg",
+                    "aws-codecommit-notification-4-teams/main/"
+                    "tests/integration/girigiri_neko.jpg",
             },
         )
 
