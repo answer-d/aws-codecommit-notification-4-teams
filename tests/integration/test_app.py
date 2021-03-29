@@ -80,7 +80,7 @@ class TestApp(TestCase):
                 "Notification4TeamsImageUrl":
                     "https://raw.githubusercontent.com/answer-d/"
                     "aws-codecommit-notification-4-teams/answer-d/"
-                    "issue3/tests/girigiri_neko.jpg",
+                    "issue3/tests/integration/girigiri_neko.jpg",
             },
         )
 
