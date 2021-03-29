@@ -68,6 +68,13 @@ Resources:
       Environment:
         Variables:
           HOOK_URL: !Ref HookUrl
+      Policies:
+        - Statement:
+            - Sid: CodeCommitListTags
+              Effect: Allow
+              Action:
+                - codecommit:ListTagsForResource
+              Resource: "*"
 
   # 削除後にLogGroupが残り続ける問題に対応
   # yamllint disable-lint rule:line-length
