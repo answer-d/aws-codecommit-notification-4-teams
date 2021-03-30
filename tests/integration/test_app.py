@@ -75,7 +75,12 @@ class TestApp(TestCase):
             repositoryName=self.repository_name,
             tags={
                 'Service': 'aws-codecommit-notification-4-teams',
-                'Purpose': 'CI'
+                'Purpose': 'CI',
+                'Notification4TeamsColorCode': "007627",
+                "Notification4TeamsImageUrl":
+                    "https://raw.githubusercontent.com/answer-d/"
+                    "aws-codecommit-notification-4-teams/main/"
+                    "tests/integration/girigiri_neko.jpg",
             },
         )
 
@@ -259,10 +264,12 @@ class TestApp(TestCase):
             branchName=feature_branch_name,
         )
 
-        # Lambda処理待ち (クソ実装 of the year 受賞中)
+        # Lambda処理+CloudWatchメトリクス取得待ち (クソ実装 of the year受賞中)
         if not os.environ.get("AWS_SAM_SKIP_IT_WAIT"):
             print(f"{chr(int(0x2615))} coffee break...")
             time.sleep(10 * 60)
+        else:
+            time.sleep(30)
 
         dt_after = datetime.now(timezone.utc)
 

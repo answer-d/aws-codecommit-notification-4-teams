@@ -1,6 +1,7 @@
 import json
 import pymsteams
 import os
+import boto3
 
 
 def lambda_handler(event, context):
@@ -23,17 +24,17 @@ def lambda_handler(event, context):
             detail_type == "CodeCommit Comment on Pull Request":
         ccard_info.update(generate_ccard_info_comment(event_message))
 
-    # todo: def set_color_by_reponame()
-    if "ansible" in ccard_info['repository_name']:
-        ccard_info['color'] = "#ff5750"
-    elif "terraform" in ccard_info['repository_name']:
-        ccard_info['color'] = "#623CE4"
+    codecommit_arn = event_message["resources"][0]
 
-    # todo: def set_image_by_reponame()
-    if "ansible" in ccard_info['repository_name']:
-        ccard_info['activity_image'] = "https://xxx"
-    elif "terraform" in ccard_info['repository_name']:
-        ccard_info['activity_image'] = "https://xxx"
+    color = get_codecommit_tag(
+        codecommit_arn, "Notification4TeamsColorCode")
+    if color:
+        ccard_info['color'] = color
+
+    image_url = get_codecommit_tag(
+        codecommit_arn, "Notification4TeamsImageUrl")
+    if image_url:
+        ccard_info['activity_image'] = image_url
 
     print(ccard_info)
     ccard = create_ccard(**ccard_info)
@@ -63,7 +64,7 @@ def create_ccard(url, title, repository_name, **kwargs):
     if "summary" in kwargs:
         ccard.summary(kwargs.get("summary"))
 
-    # TODO: 色付けの仕方(環境変数とか？)
+    # カードの色指定
     if "color" in kwargs:
         ccard.color(kwargs.get("color"))
 
@@ -72,8 +73,8 @@ def create_ccard(url, title, repository_name, **kwargs):
     # リポジトリ名
     section_info.activityTitle(repository_name)
 
-    # カード内に表示する画像、サイズ制限あり(上限忘れた)
-    # TODO: 画像の選び方(S3？)
+    # カード内に表示する画像
+    # png/jpeg/gif(非アニメーション)、上限1024*1024
     if "activity_image" in kwargs:
         section_info.activityImage(kwargs.get("activity_image"))
 
@@ -262,3 +263,14 @@ def generate_ccard_info_comment(event_message) -> dict:
         ret['title'] = 'コメントが付きました！'
 
     return ret
+
+
+def get_codecommit_tag(repository_arn, key) -> str:
+    client = boto3.client("codecommit")
+
+    tags = client.list_tags_for_resource(resourceArn=repository_arn)["tags"]
+
+    if key in tags:
+        return tags[key]
+    else:
+        return None
