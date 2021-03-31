@@ -46,5 +46,5 @@ jobs:
         with:
           sam_command: "publish \
             -t packaged.yaml \
-            --sementic-version ${{ steps.get-tag.outputs.release_version }} \
+            --semantic-version ${{ steps.get-tag.outputs.release_version }} \
             --region ${{ secrets.AWS_DEFAULT_REGION }}"
