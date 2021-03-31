@@ -21,9 +21,9 @@ Metadata:
       - teams
       - notification
       - webhook
-    HomePageUrl: >
+    HomePageUrl: >-
       https://github.com/answer-d/aws-codecommit-notification-4-teams
-    SourceCodeUrl: >
+    SourceCodeUrl: >-
       https://github.com/answer-d/aws-codecommit-notification-4-teams
 
 Parameters:
