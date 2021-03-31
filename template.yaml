@@ -6,6 +6,26 @@ Description: >
 
   Create Lambda and SNS to notify CodeCommit events to Teams
 
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: codecommit-notification-4-teams
+    Description: Create Lambda and SNS to notify CodeCommit events to Teams
+    Author: "Answer-D"
+    SpdxLicenseId: MIT
+    LicenseUrl: LICENSE
+    ReadmeUrl: README.md
+    Labels:
+      - lambda
+      - codecommit
+      - sns
+      - teams
+      - notification
+      - webhook
+    HomePageUrl: >
+      https://github.com/answer-d/aws-codecommit-notification-4-teams
+    SourceCodeUrl: >
+      https://github.com/answer-d/aws-codecommit-notification-4-teams
+
 Parameters:
   HookUrl:
     Type: String

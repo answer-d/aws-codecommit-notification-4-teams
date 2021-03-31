@@ -1,0 +1,48 @@
+---
+name: release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Assume Role
+        uses: youyo/awscredswrap@master
+        with:
+          role_arn: ${{ secrets.ROLE_ARN }}
+          duration_seconds: 3600
+          role_session_name: "awscredswrap@GitHubActions"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Set release version
+        run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:10})
+
+      - name: Package sam template with sam package
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: package \
+            --s3-bucket aws-codecommit-notification-4-teams-sampackage \
+            --output-template-file packaged.yaml
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: packaged.yaml
+      - name: Publish application with sam publish
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: publish \
+            -t packaged.yaml \
+            --sementic-version ${{ env.RELEASE_VERSION }} \
+            --region ${{ secrets.AWS_DEFAULT_REGION }}
