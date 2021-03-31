@@ -1,34 +1,129 @@
-# aws-codecommit-notification-4-teams
+# AWS CodeCommit Notification 4 Teams
 
 [![ut](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/ut.yml/badge.svg)](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/ut.yml)
 [![it](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/it.yml/badge.svg)](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/it.yml)
 
-This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
+## Overview
 
-- hello_world - Code for the application's Lambda function.
-- events - Invocation events that you can use to invoke the function.
-- tests - Unit tests for the application code.
-- template.yaml - A template that defines the application's AWS resources.
+CodeCommitで発生するイベントをTeams Incoming Webhookに通知するためのSNSとLambda Functionを作成する
 
-The application uses several AWS resources, including Lambda functions and an API Gateway API. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
+**使用イメージ入れる**
 
-If you prefer to use an integrated development environment (IDE) to build and test your application, you can use the AWS Toolkit.
-The AWS Toolkit is an open source plug-in for popular IDEs that uses the SAM CLI to build and deploy serverless applications on AWS. The AWS Toolkit also adds a simplified step-through debugging experience for Lambda function code. See the following links to get started.
+## Getting Started
 
-* [PyCharm](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [IntelliJ](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [VS Code](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/welcome.html)
-* [Visual Studio](https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/welcome.html)
+### Teams Incoming Webhookを作成
 
-## Deploy the sample application
+**あとでかく**
+
+### デプロイ
+
+以下のいずれかの方法でアプリケーションをデプロイする
+
+#### AWS Serverless Application Repositoryでデプロイ (推奨)
+
+[アプリケーションページ](https://serverlessrepo.aws.amazon.com/applications/ap-northeast-1/521635626865/codecommit-notification-4-teams) で `デプロイ` を押す
+
+- `HookUrl` に [Teams Incoming Webhookを作成](#teams-incoming-webhookを作成) で作成されたWebhookのURLをペースト
+
+#### CloudFormationでデプロイ
+
+```console
+sam package \
+  --s3-bucket aws-codecommit-notification-4-teams-sampackage \
+  --output-template-file packaged.yaml
+
+aws cloudformation deploy \
+  --template-file packaged.yaml \
+  --stack-name <<<YOUR STACK NAME>>> \
+  --parameter-overrides HookUrl=<<<YOUR TEAMS INCOMING WEBHOOK URL>>> \
+  --capabilities CAPABILITY_IAM
+```
+
+#### SAM CLIでデプロイ
+
+[Deploy Application via SAM CLI](#deploy-application-via-sam-cli) 参照
+
+### CodeCommitで通知設定
+
+![CodeCommit通知設定](docs/img/2021-03-31-13-55-52.png)
+![CodeCommit通知設定](docs/img/2021-03-31-13-59-18.png)
+
+- 通知をトリガーしたいイベントにチェック
+- デプロイされたSNSトピックをターゲットに設定
+
+### CodeCommitリポジトリに変更を行う
+
+ブランチやPull Requestの作成などを行い、Webhookに通知が行われることを確認
+
+## Created Resource
+
+[template.yaml](template.yaml) 参照
+
+## Configuration
+
+### 通知メッセージに色を付ける
+
+リポジトリごとに通知メッセージの色を設定可能
+
+- before
+
+  **あとで画像いれる**
+
+- after
+
+  **あとで画像いれる**
+
+#### 設定方法
+
+CodeCommitリポジトリに対して以下のタグを設定する
+
+| key                        | value     |
+| :------------------------- | :-------- |
+| Notification4TeamsImageUrl | 画像のURL |
+
+- 画像には以下の制限がある
+  - タイプ：png/jpeg/gif(非アニメーション)
+  - サイズ上限：1024\*1024
+
+### 通知メッセージに画像を表示する
+
+リポジトリごとに通知メッセージの画像を設定可能
+
+- before
+
+  **あとで画像いれる**
+
+- after
+
+  **あとで画像いれる**
+
+#### 設定方法
+
+CodeCommitリポジトリに対して以下のタグを設定する
+
+| key                         | value                                         |
+| :-------------------------- | :-------------------------------------------- |
+| Notification4TeamsColorCode | `#` を含めない16進カラーコード(例: `007627` ) |
+
+## Uninstall
+
+CloudFormationスタックを削除
+
+## License
+
+[LICENSE](LICENSE) 参照
+
+## Develop
+
+### Deploy Application via SAM CLI
 
 The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds functionality for building and testing Lambda applications. It uses Docker to run your functions in an Amazon Linux environment that matches Lambda. It can also emulate your application's build environment and API.
 
 To use the SAM CLI, you need the following tools.
 
-* SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-* [Python 3 installed](https://www.python.org/downloads/)
-* Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
+- SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+- [Python 3 installed](https://www.python.org/downloads/)
+- Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
 
 To build and deploy your application for the first time, run the following in your shell:
 
@@ -39,15 +134,15 @@ sam deploy --guided
 
 The first command will build the source of your application. The second command will package and deploy your application to AWS, with a series of prompts:
 
-* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
-* **AWS Region**: The AWS region you want to deploy your app to.
-* **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
-* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modified IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
+- **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
+- **AWS Region**: The AWS region you want to deploy your app to.
+- **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
+- **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modified IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
+- **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
 
 You can find your API Gateway Endpoint URL in the output values displayed after deployment.
 
-## Use the SAM CLI to build and test locally
+### Use the SAM CLI to build and test locally
 
 Build your application with the `sam build --use-container` command.
 
@@ -55,7 +150,7 @@ Build your application with the `sam build --use-container` command.
 aws-codecommit-notification-4-teams$ sam build --use-container
 ```
 
-The SAM CLI installs dependencies defined in `hello_world/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
+The SAM CLI installs dependencies defined in `aws_codecommit_notification_4_teams/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
 
 Test a single function by invoking it directly with a test event. An event is a JSON document that represents the input that the function receives from the event source. Test events are included in the `events` folder in this project.
 
@@ -65,28 +160,11 @@ Run functions locally and invoke them with the `sam local invoke` command.
 aws-codecommit-notification-4-teams$ sam local invoke HelloWorldFunction --event events/event.json
 ```
 
-The SAM CLI can also emulate your application's API. Use the `sam local start-api` to run the API locally on port 3000.
+### Add a resource to your application
 
-```bash
-aws-codecommit-notification-4-teams$ sam local start-api
-aws-codecommit-notification-4-teams$ curl http://localhost:3000/
-```
-
-The SAM CLI reads the application template to determine the API's routes and the functions that they invoke. The `Events` property on each function's definition includes the route and method for each path.
-
-```yaml
-      Events:
-        HelloWorld:
-          Type: Api
-          Properties:
-            Path: /hello
-            Method: get
-```
-
-## Add a resource to your application
 The application template uses AWS Serverless Application Model (AWS SAM) to define application resources. AWS SAM is an extension of AWS CloudFormation with a simpler syntax for configuring common serverless application resources such as functions, triggers, and APIs. For resources not included in [the SAM specification](https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md), you can use standard [AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html) resource types.
 
-## Fetch, tail, and filter Lambda function logs
+### Fetch, tail, and filter Lambda function logs
 
 To simplify troubleshooting, SAM CLI has a command called `sam logs`. `sam logs` lets you fetch logs generated by your deployed Lambda function from the command line. In addition to printing the logs on the terminal, this command has several nifty features to help you quickly find the bug.
 
@@ -98,7 +176,7 @@ aws-codecommit-notification-4-teams$ sam logs -n HelloWorldFunction --stack-name
 
 You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
 
-## Tests
+### Tests
 
 Tests are defined in the `tests` folder in this project. Use PIP to install the test dependencies and run tests.
 
@@ -111,7 +189,7 @@ aws-codecommit-notification-4-teams$ python -m pytest tests/unit -v
 aws-codecommit-notification-4-teams$ AWS_SAM_STACK_NAME=<stack-name> python -m pytest tests/integration -v
 ```
 
-## Cleanup
+### Cleanup
 
 To delete the sample application that you created, use the AWS CLI. Assuming you used your project name for the stack name, you can run the following:
 
@@ -119,7 +197,7 @@ To delete the sample application that you created, use the AWS CLI. Assuming you
 aws cloudformation delete-stack --stack-name aws-codecommit-notification-4-teams
 ```
 
-## Resources
+### Resources
 
 See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for an introduction to SAM specification, the SAM CLI, and serverless application concepts.
 
