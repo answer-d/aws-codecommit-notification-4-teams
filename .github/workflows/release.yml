@@ -37,10 +37,11 @@ jobs:
             --s3-bucket aws-codecommit-notification-4-teams-sampackage \
             --output-template-file packaged.yaml"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
+      - name: Upload assets to github release
+        uses: shogo82148/actions-upload-release-asset@v1
         with:
-          path: packaged.yaml
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: packaged.yaml
       - name: Publish application with sam publish
         uses: youyo/aws-sam-action/python3.8@v2
         with:
