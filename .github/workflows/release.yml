@@ -33,9 +33,9 @@ jobs:
       - name: Package sam template with sam package
         uses: youyo/aws-sam-action/python3.8@v2
         with:
-          sam_command: package \
+          sam_command: "package \
             --s3-bucket aws-codecommit-notification-4-teams-sampackage \
-            --output-template-file packaged.yaml
+            --output-template-file packaged.yaml"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -44,7 +44,7 @@ jobs:
       - name: Publish application with sam publish
         uses: youyo/aws-sam-action/python3.8@v2
         with:
-          sam_command: publish \
+          sam_command: "publish \
             -t packaged.yaml \
             --sementic-version ${{ steps.get-tag.outputs.release_version }} \
-            --region ${{ secrets.AWS_DEFAULT_REGION }}
+            --region ${{ secrets.AWS_DEFAULT_REGION }}"
