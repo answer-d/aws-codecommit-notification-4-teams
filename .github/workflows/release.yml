@@ -30,7 +30,11 @@ jobs:
         run: echo ::set-output name=release_version::$(echo ${GITHUB_REF:10})
         shell: bash
 
-      - name: Package sam template with sam package
+      - name: Build application with sam build
+        uses: youyo/aws-sam-action/python3.8@v2
+        with:
+          sam_command: build
+      - name: Package application with sam package
         uses: youyo/aws-sam-action/python3.8@v2
         with:
           sam_command: "package \
