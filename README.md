@@ -2,58 +2,58 @@
 
 [![ut](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/ut.yml/badge.svg)](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/ut.yml)
 [![it](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/it.yml/badge.svg)](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/it.yml)
+[![release](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/release.yml/badge.svg)](https://github.com/answer-d/aws-codecommit-notification-4-teams/actions/workflows/release.yml)
+[![license](https://img.shields.io/github/license/answer-d/aws-codecommit-notification-4-teams.svg)](https://github.com/answer-d/aws-codecommit-notification-4-teams/blob/main/LICENSE)
 
 ## Overview
 
-CodeCommitで発生するイベントをTeams Incoming Webhookに通知するためのSNSとLambda Functionを作成する
+CodeCommitで発生するイベントをTeams Incoming Webhookに通知する
 
-**使用イメージ入れる**
+![usecase image pr create](docs/img/2021-04-01-14-04-43.png)
+![usecase image pr merge](docs/img/2021-04-01-14-05-48.png)
 
 ## Getting Started
 
-### Teams Incoming Webhookを作成
+### 1. Teams Incoming Webhookを作成
 
-**あとでかく**
+- [Teams チャネルに受信 Webhook を追加する](https://docs.microsoft.com/ja-jp/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook#add-an-incoming-webhook-to-a-teams-channel)
 
-### デプロイ
+### 2. デプロイ
 
-以下のいずれかの方法でアプリケーションをデプロイする
+- 以下のいずれかの方法でアプリケーションをデプロイ
 
-#### AWS Serverless Application Repositoryでデプロイ (推奨)
+1. AWS Serverless Application Repositoryでデプロイ (推奨)
 
-[アプリケーションページ](https://serverlessrepo.aws.amazon.com/applications/ap-northeast-1/521635626865/codecommit-notification-4-teams) で `デプロイ` を押す
+    - [アプリケーションページ](https://serverlessrepo.aws.amazon.com/applications/ap-northeast-1/521635626865/codecommit-notification-4-teams) から
+    - `HookUrl` に [Teams Incoming Webhookを作成](#teams-incoming-webhookを作成) で作成されたWebhookのURLをペーストして `デプロイ` を押す
+2. CloudFormationでデプロイ
 
-- `HookUrl` に [Teams Incoming Webhookを作成](#teams-incoming-webhookを作成) で作成されたWebhookのURLをペースト
+    - [Release](https://github.com/answer-d/aws-codecommit-notification-4-teams/releases) から最新の `packaged.yaml` を入手
+    - CloudFormationスタックを作成
 
-#### CloudFormationでデプロイ
+      ```console
+      aws cloudformation deploy \
+        --template-file packaged.yaml \
+        --stack-name <<<YOUR STACK NAME>>> \
+        --parameter-overrides HookUrl=<<<YOUR TEAMS INCOMING WEBHOOK URL>>> \
+        --capabilities CAPABILITY_IAM
+      ```
 
-```console
-sam package \
-  --s3-bucket aws-codecommit-notification-4-teams-sampackage \
-  --output-template-file packaged.yaml
+3. SAM CLIでデプロイ
 
-aws cloudformation deploy \
-  --template-file packaged.yaml \
-  --stack-name <<<YOUR STACK NAME>>> \
-  --parameter-overrides HookUrl=<<<YOUR TEAMS INCOMING WEBHOOK URL>>> \
-  --capabilities CAPABILITY_IAM
-```
+    - [Deploy Application via SAM CLI](#deploy-application-via-sam-cli) 参照
 
-#### SAM CLIでデプロイ
+### 3. CodeCommitで通知設定
 
-[Deploy Application via SAM CLI](#deploy-application-via-sam-cli) 参照
-
-### CodeCommitで通知設定
-
-![CodeCommit通知設定](docs/img/2021-03-31-13-55-52.png)
-![CodeCommit通知設定](docs/img/2021-03-31-13-59-18.png)
-
-- 通知をトリガーしたいイベントにチェック
+- リポジトリの設定で通知をトリガーしたいイベントにチェック
 - デプロイされたSNSトピックをターゲットに設定
 
-### CodeCommitリポジトリに変更を行う
+  ![CodeCommit通知設定](docs/img/2021-03-31-13-55-52.png)
+  ![CodeCommit通知設定](docs/img/2021-03-31-13-59-18.png)
 
-ブランチやPull Requestの作成などを行い、Webhookに通知が行われることを確認
+### 4. CodeCommitリポジトリに変更を行う
+
+- ブランチやPull Requestの作成などを行い、Webhookに通知が行われることを確認
 
 ## Created Resource
 
@@ -67,11 +67,11 @@ aws cloudformation deploy \
 
 - before
 
-  **あとで画像いれる**
+  ![Message before](docs/img/2021-04-01-13-52-04.png)
 
 - after
 
-  **あとで画像いれる**
+  ![Message with color](docs/img/2021-04-01-14-00-02.png)
 
 #### 設定方法
 
@@ -91,11 +91,11 @@ CodeCommitリポジトリに対して以下のタグを設定する
 
 - before
 
-  **あとで画像いれる**
+  ![Message before](docs/img/2021-04-01-13-52-04.png)
 
 - after
 
-  **あとで画像いれる**
+  ![Message with image](docs/img/2021-04-01-13-56-17.png)
 
 #### 設定方法
 
